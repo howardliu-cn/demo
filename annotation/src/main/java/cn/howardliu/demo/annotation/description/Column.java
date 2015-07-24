@@ -1,11 +1,10 @@
-package cn.howardliu.demo.annotation;
+package cn.howardliu.demo.annotation.description;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
+ * Column注解的的RetentionPolicy的属性值是 RUNTIME,这样注解处理器可以通过反射，
+ * 获取到该注解的属性值，从而去做一些运行时的逻辑处理
  * <br/>create at 15-7-23
  *
  * @author liuxh
@@ -13,6 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface Column {
     public String name() default "fieldName";
 
