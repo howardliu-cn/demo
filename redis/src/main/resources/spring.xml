@@ -4,47 +4,30 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:cache="http://www.springframework.org/schema/cache"
        xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/cache
                            http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <context:component-scan base-package="cn.howardliu.demo.redis"/>
     <context:property-placeholder location="classpath:redis.properties" file-encoding="UTF-8"
                                   ignore-unresolvable="true"/>
-
+    <!-- turn on declarative caching -->
+    <cache:annotation-driven/>
     <!-- redis 相关配置 -->
     <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig" p:maxIdle="${redis.maxIdle}"
           p:maxWaitMillis="${redis.maxWaitMillis}" p:testOnBorrow="${redis.testOnBorrow}"/>
-
+    <!-- Jedis ConnectionFactory -->
     <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-          p:hostName="${redis.host}" p:usePool="true" p:poolConfig-ref="poolConfig"/>
-
-    <!-- 启用缓存注解功能，这个是必须的，否则注解不会生效，另外，该注解一定要声明在spring主配置文件中才会生效 -->
-    <cache:annotation-driven cache-manager="cacheManager"/>
-
-    <!-- spring自己的缓存管理器，既注解中的value -->
-    <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
-        <property name="caches">
-            <set>
-                <bean class="org.springframework.data.redis.cache.RedisCache">
-                    <constructor-arg name="name" value="default"/>
-                    <constructor-arg name="template">
-                        <list>
-                            <bean class="org.springframework.data.redis.core.RedisTemplate"
-                                  p:connectionFactory-ref="jedisConnectionFactory"/>
-                        </list>
-                    </constructor-arg>
-                    <constructor-arg name="prefix" value=""/>
-                    <constructor-arg name="expiration" value="3000"/>
-                </bean>
-            </set>
-        </property>
-    </bean>
-    <bean id="redisCacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
-        <constructor-arg name="template" ref="redisTemplate"/>
-    </bean>
+          p:hostName="${redis.host}" p:port="${redis.port}" p:usePool="${redis.usePool}" p:poolConfig-ref="poolConfig"/>
+    <!-- redis template definition -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
           p:connectionFactory-ref="jedisConnectionFactory"/>
-    <context:component-scan base-package="cn.howardliu.demo.redis"/>
+    <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
+          p:connectionFactory-ref="jedisConnectionFactory"/>
+    <!-- declare Redis Cache Manager -->
+    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"
+          c:template-ref="redisTemplate"/>
 </beans>
