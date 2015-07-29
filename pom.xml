@@ -11,6 +11,7 @@
     <modules>
         <module>annotation</module>
         <module>redis</module>
+        <module>curator</module>
     </modules>
     <dependencies>
         <dependency>
