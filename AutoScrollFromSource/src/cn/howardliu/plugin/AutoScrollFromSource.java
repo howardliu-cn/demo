@@ -25,23 +25,21 @@ public class AutoScrollFromSource extends AnAction {
         try {
             Project project = event.getProject();
             assert project != null;
-            ProjectViewImpl projectView = (ProjectViewImpl) ProjectViewImpl.getInstance(project);
-            Class<ProjectView> clazz = ProjectView.class;
-            Field[] fields = clazz.getFields();
+            ProjectViewImpl projectView = (ProjectViewImpl) ProjectView.getInstance(project);
+            Class<ProjectViewImpl> clazz = ProjectViewImpl.class;
+            Field[] fields = clazz.getDeclaredFields();
             Field field = null;
             for (Field f : fields) {
-                // can't use field's name to find the variable of MyAutoScrollFromSourceHandler
-                if ("MyScrollFromSourceHandler".equals(f.getType().getSimpleName())) {
+                if ("MyAutoScrollFromSourceHandler".equals(f.getType().getSimpleName())) {
                     field = f;
                 }
             }
-            //  TODO need to fix bug : the next line is always is null
             assert field != null;
             field.setAccessible(true);
             Object handler = field.get(projectView);
             Class<?>[] cs = clazz.getDeclaredClasses();
             for (Class<?> c : cs) {
-                if ("MyScrollFromSourceHandler".equals(c.getSimpleName())) {
+                if ("MyAutoScrollFromSourceHandler".equals(c.getSimpleName())) {
                     Method m = c.getMethod("scrollFromSource");
                     m.setAccessible(true);
                     m.invoke(handler);

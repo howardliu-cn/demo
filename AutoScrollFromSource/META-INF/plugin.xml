@@ -2,7 +2,9 @@
     <id>cn.howardliu</id>
     <name>Scroll from Source</name>
     <version>1.0</version>
-    <vendor email="liuxinghao1988@163.com" url="http://www.howardliu.cn">Howard Liu</vendor>
+    <vendor email="liuxinghao1988@163.com" url="https://github.com/conansix/demo/tree/master/AutoScrollFromSource">
+        Howard Liu
+    </vendor>
 
     <description>
         <![CDATA[]]>
@@ -36,8 +38,8 @@
     <actions>
         <!-- Action: Auto Scroll from Source -->
         <action id="autoScrollFromSource" class="cn.howardliu.plugin.AutoScrollFromSource" text="Scroll From Source"
-                description="Set keybord shortcut for the function &quot;Scroll from Source&quot; in the Project Panel.">
-            <add-to-group group-id="EditorPopupMenu" anchor="first" relative-to-action="EditorPopupMenu1"/>
+                description="Set keyboard shortcut for the function &quot;Scroll from Source&quot; in the Project Panel.">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="EditorPopupMenu1"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt R"/>
         </action>
     </actions>
