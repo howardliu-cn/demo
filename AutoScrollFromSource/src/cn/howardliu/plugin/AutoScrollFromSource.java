@@ -1,6 +1,7 @@
 package cn.howardliu.plugin;
 
 import com.intellij.ide.projectView.ProjectView;
+import com.intellij.ide.projectView.impl.ProjectViewImpl;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -24,22 +25,23 @@ public class AutoScrollFromSource extends AnAction {
         try {
             Project project = event.getProject();
             assert project != null;
-            ProjectView projectView = ProjectView.getInstance(project);
+            ProjectViewImpl projectView = (ProjectViewImpl) ProjectViewImpl.getInstance(project);
             Class<ProjectView> clazz = ProjectView.class;
             Field[] fields = clazz.getFields();
             Field field = null;
             for (Field f : fields) {
                 // can't use field's name to find the variable of MyAutoScrollFromSourceHandler
-                if ("AutoScrollFromSourceHandler".equals(f.getType().getSimpleName())) {
+                if ("MyScrollFromSourceHandler".equals(f.getType().getSimpleName())) {
                     field = f;
                 }
             }
+            //  TODO need to fix bug : the next line is always is null
             assert field != null;
             field.setAccessible(true);
             Object handler = field.get(projectView);
             Class<?>[] cs = clazz.getDeclaredClasses();
             for (Class<?> c : cs) {
-                if ("AutoScrollFromSourceHandler".equals(c.getSimpleName())) {
+                if ("MyScrollFromSourceHandler".equals(c.getSimpleName())) {
                     Method m = c.getMethod("scrollFromSource");
                     m.setAccessible(true);
                     m.invoke(handler);

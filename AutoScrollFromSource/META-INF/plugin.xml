@@ -35,9 +35,9 @@
 
     <actions>
         <!-- Action: Auto Scroll from Source -->
-        <action id="autoScrollFromSource" class="cn.howardliu.plugin.AutoScrollFromSource" text="ScrollFromSource"
+        <action id="autoScrollFromSource" class="cn.howardliu.plugin.AutoScrollFromSource" text="Scroll From Source"
                 description="Set keybord shortcut for the function &quot;Scroll from Source&quot; in the Project Panel.">
-            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="first" relative-to-action="EditorPopupMenu1"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt R"/>
         </action>
     </actions>
