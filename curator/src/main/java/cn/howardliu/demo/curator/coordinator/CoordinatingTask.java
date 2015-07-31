@@ -126,7 +126,7 @@ public abstract class CoordinatingTask<P, R> {
     private boolean lockStatus() throws Exception {
         long id = System.currentTimeMillis();
         logger.info("编号：{}", id);
-        this.statusNodeMutex.acquire();
+//        this.statusNodeMutex.acquire();
         try {
             String status = getStatus();
             logger.info("锁定状态：先获取状态为{}，然后进行操作。", status);
@@ -139,7 +139,7 @@ public abstract class CoordinatingTask<P, R> {
             }
         } finally {
             try {
-                this.statusNodeMutex.release();
+//                this.statusNodeMutex.release();
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
@@ -152,7 +152,7 @@ public abstract class CoordinatingTask<P, R> {
         logger.info("释放状态锁开始");
         long id = System.currentTimeMillis();
         logger.info("编号：{}", id);
-        statusNodeMutex.acquire();
+//        statusNodeMutex.acquire();
         try {
             if (isSuccess) {
                 this.client.setData().forPath(this.statusDomain, STATUS_SUCCESS.getBytes());
@@ -160,7 +160,7 @@ public abstract class CoordinatingTask<P, R> {
                 this.client.setData().forPath(this.statusDomain, STATUS_STANDBY.getBytes());
             }
         } finally {
-            statusNodeMutex.release();
+//            statusNodeMutex.release();
             logger.info("释放状态锁结束");
             logger.info("编号：{}", id);
         }
@@ -174,9 +174,9 @@ public abstract class CoordinatingTask<P, R> {
     private String getStatus() throws Exception {
         long id = System.currentTimeMillis();
         logger.info("编号：{}", id);
-        this.statusNodeMutex.acquire();
+//        this.statusNodeMutex.acquire();
         String status = new String(this.client.getData().forPath(this.statusDomain));
-        this.statusNodeMutex.release();
+//        this.statusNodeMutex.release();
         logger.info("编号：{}", id);
         return status;
     }
