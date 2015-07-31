@@ -3,13 +3,14 @@ package cn.howardliu.demo.curator.coordinator;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.NodeCache;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
-import org.apache.curator.framework.recipes.locks.RevocationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <br/>create at 15-7-31
@@ -63,6 +64,7 @@ public abstract class CoordinatingTask<P, R> {
                 synchronized (this._$task) {
                     this._$task.notify();
                 }
+                this.statusNodeCache.close();
             }
         });
         statusNodeCache.start(true);
@@ -70,7 +72,7 @@ public abstract class CoordinatingTask<P, R> {
 
     public void run() throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
-        Future<?> future = executor.submit(() -> {
+        executor.execute(() -> {
             try {
                 String status;
                 while (!(status = this.getStatus()).equals(STATUS_SUCCESS)) {
@@ -104,32 +106,17 @@ public abstract class CoordinatingTask<P, R> {
                 }
                 logger.info("运行成功，跳出循环等待。。。");
                 this.finishTask();
-                executor.shutdownNow();
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
+                finishFlag.countDown();
+                logger.info("countDown结束");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
-        try {
-            future.get(taskDurationLimit.getSeconds(), TimeUnit.SECONDS);// 最长等待timeout秒，timeout秒后中止任务
-        } catch (InterruptedException ignore) {
-            //"主线程在等待计算结果时被中断！";
-            ignore.printStackTrace();
-            this.statusNodeMutex.makeRevocable(forLock -> {
-                try {
-                    logger.info(forLock.getParticipantNodes().toString());
-                    forLock.release();
-                    logger.info(forLock.getParticipantNodes().toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (TimeoutException e) {
-            //"主线程等待计算结果超时，因此中断任务线程！";
-            e.printStackTrace();
-            this.releaseStatus(false);
-            executor.shutdownNow();
-        }
+        logger.info("等待。。。");
+        finishFlag.await(this.taskDurationLimit.getSeconds(), TimeUnit.SECONDS);
+        logger.info("等待结束，开始shutdown");
         executor.shutdown();
+        logger.info("shutdown结束。");
     }
 
     protected abstract void doTask() throws Exception;
@@ -156,12 +143,13 @@ public abstract class CoordinatingTask<P, R> {
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
-            logger.info("状态锁释结束");
+            logger.info("锁定状态锁结束");
             logger.info("编号：{}", id);
         }
     }
 
     private void releaseStatus(boolean isSuccess) throws Exception {
+        logger.info("释放状态锁开始");
         long id = System.currentTimeMillis();
         logger.info("编号：{}", id);
         statusNodeMutex.acquire();
@@ -173,6 +161,7 @@ public abstract class CoordinatingTask<P, R> {
             }
         } finally {
             statusNodeMutex.release();
+            logger.info("释放状态锁结束");
             logger.info("编号：{}", id);
         }
     }
