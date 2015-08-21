@@ -1,0 +1,73 @@
+#parse ("macro.vm")
+package com.liuxiang.velocity.action;
+
+import java.util.List;
+
+import com.liuxiang.velocity.annotation.Action;
+import com.liuxiang.velocity.annotation.Autowired;
+import com.liuxiang.velocity.dao.${classNameUpCase}Dao;
+import com.liuxiang.velocity.model.${classNameUpCase};
+import com.liuxiang.velocity.util.WebUtil;
+
+@Action("${classNameLowCase}Action")
+public class ${classNameUpCase}Action extends BaseAction{
+	@Autowired
+	public ${classNameUpCase}Dao ${classNameLowCase}Dao;
+	private List<${classNameUpCase}> ${classNameLowCase}s;
+	private ${classNameUpCase} ${classNameLowCase};
+#foreach ($attr in ${attrs})
+	private ${attr[0]} ${attr[1]};
+#end
+	public String ${classNameLowCase}List() {
+		${classNameLowCase}s = ${classNameLowCase}Dao.retrieveAll${classNameUpCase}s();
+		return "${classNameLowCase}List.jsp";
+	}
+	
+	public String to${classNameUpCase}Modify() {
+		${classNameLowCase} = ${classNameLowCase}Dao.retrieveById(id);
+		return "${classNameLowCase}Modify.jsp";
+	}
+	public void ${classNameLowCase}Modify() {
+		${classNameLowCase} = new ${classNameUpCase}(#generateParam(${attrs}));
+		${classNameLowCase}Dao.update(${classNameLowCase});
+		WebUtil.sendMessage("success");
+	}
+	
+	public String to${classNameUpCase}Add() {
+		return "${classNameLowCase}Add.jsp";
+	}
+	public void ${classNameLowCase}Add() {
+		${classNameLowCase} = new ${classNameUpCase}(#generateParam(${attrs}));
+		${classNameLowCase}Dao.add(${classNameLowCase});
+		WebUtil.sendMessage("success");
+	}
+	public void ${classNameLowCase}Delete() {
+		${classNameLowCase}Dao.delete(id);
+		WebUtil.sendMessage("success");
+	}
+	
+	public List<${classNameUpCase}> get${classNameUpCase}s() {
+		return ${classNameLowCase}s;
+	}
+	public void set${classNameUpCase}s(List<${classNameUpCase}> ${classNameLowCase}s) {
+		this.${classNameLowCase}s = ${classNameLowCase}s;
+	}
+#foreach ($attr in ${attrs})
+	#set($attrName = ${attr[1]})
+	#set($AttrName = "#toUpperCase($attrName)")
+	public ${attr[0]} get${AttrName}() {
+		return ${attr[1]};
+	}
+
+	public void set${AttrName}(${attr[0]} ${attr[1]}) {
+		this.${attr[1]} = ${attr[1]};
+	}
+#end
+	public ${classNameUpCase} get${classNameUpCase}() {
+		return ${classNameLowCase};
+	}
+	
+	public void set${classNameUpCase}(${classNameUpCase} ${classNameLowCase}) {
+		this.${classNameLowCase} = ${classNameLowCase};
+	}
+}

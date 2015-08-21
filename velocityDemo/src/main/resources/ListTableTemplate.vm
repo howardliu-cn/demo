@@ -1,0 +1,12 @@
+#parse ("macro.vm")
+#set($plus = "status.index+1")
+<table border="1" style="width: 100%">
+	<thead>
+		<tr><th>No.</th>#generateTH($attrs)</tr>
+	</thead>
+	<tbody>
+		<c:forEach var="${classNameLowCase}" items="${${classNameLowCase}s }" varStatus="status" >
+			<tr ${classNameLowCase}Id="${${classNameLowCase}.id }"><td>${${plus}}</td>#generateTD($classNameLowCase $attrs)<td><button class="modifyButton">Modify</button><button class="deleteButton">Delete</button></td></tr>
+		</c:forEach>
+	</tbody>
+</table>

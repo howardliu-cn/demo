@@ -1,0 +1,4 @@
+#parse ("macro.vm")
+<form id="addForm">
+#generateLabelAndInput($classNameLowCase $attrs "add")
+</form>

@@ -13,6 +13,7 @@
         <module>redis</module>
         <module>curator</module>
         <module>enum</module>
+        <module>velocityDemo</module>
     </modules>
     <dependencies>
         <dependency>

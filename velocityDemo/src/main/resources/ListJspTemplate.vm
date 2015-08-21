@@ -1,0 +1,43 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<%@ include file="includeJS.jsp" %>
+	<script type="text/javascript">
+		var pageConfig = {
+				"list" : {
+					"action" : "${classNameLowCase}Action!${classNameLowCase}List.action"
+				},
+				"add" : {
+					"dialogTitle" : "${classNameUpCase} Add",
+					"action" : "${classNameLowCase}Action!${classNameLowCase}Add.action",
+					"toAction" : "${classNameLowCase}Action!to${classNameUpCase}Add.action",
+					"errorMessage" : "Add Error!"
+				},
+				"modify" : {
+					"dialogTitle" : "${classNameUpCase} Modify",
+					"action" : "${classNameLowCase}Action!${classNameLowCase}Modify.action",
+					"toAction" : "${classNameLowCase}Action!to${classNameUpCase}Modify.action",
+					"errorMessage" : "Modify Error!"
+				},
+				"delete" : {
+					"action" : "${classNameLowCase}Action!${classNameLowCase}Delete.action",
+					"errorMessage" : "Delete Error!"
+				},
+				"idName" : "${classNameLowCase}Id"
+		};
+	</script>
+	<script type="text/javascript" src="common.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>${classNameUpCase} List</title>
+</head>
+<body>
+<h1>${classNameUpCase} List</h1>
+<div><button id="addButton">Add</button></div>
+#parse ("ListTableTemplate.vm")
+<div id="modifyDiv"></div>
+<div id="addDiv"></div>
+</body>
+</html>
