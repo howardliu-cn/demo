@@ -10,5 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>luceneDemo</artifactId>
-    <de
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>5.3.0</version>
+        </dependency>
+    </dependencies>
 </project>
