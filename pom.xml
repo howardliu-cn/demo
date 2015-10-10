@@ -16,6 +16,7 @@
         <module>velocityDemo</module>
         <module>signature</module>
         <module>luceneDemo</module>
+        <module>http-client-simple</module>
     </modules>
     <dependencies>
         <dependency>
