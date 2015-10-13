@@ -101,7 +101,7 @@ public class SimpleHttpClient {
                     logger.debug("the status line of this response is {}", statusLine.getStatusCode());
                 }
                 if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                    respText = EntityUtils.toString(response.getEntity(), HttpCharset.UTF8.getContent());
+                    respText = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
                     if (logger.isDebugEnabled()) {
                         logger.debug("the message entity of this response:\n\r" + respText);
                     }
