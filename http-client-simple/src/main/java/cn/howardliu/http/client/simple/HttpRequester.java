@@ -10,7 +10,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -23,13 +22,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * <br/>create at 15-10-10
+ * <br/>create at 15-10-13
  *
  * @author liuxh
  * @since 1.0.0
  */
-public class SimpleHttpClient {
-    private static final Logger logger = LoggerFactory.getLogger(SimpleHttpClient.class);
+public abstract class HttpRequester {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    public abstract CloseableHttpClient getHttpClient();
 
     /**
      * GET方式请求url，url中已经包含请求参数或不需要参数。
@@ -39,7 +40,7 @@ public class SimpleHttpClient {
      * @throws URISyntaxException 输入的url不合法
      * @throws IOException
      */
-    public static String get(String url) throws URISyntaxException, IOException {
+    public String get(String url) throws URISyntaxException, IOException {
         return get(url, Collections.emptyList());
     }
 
@@ -52,7 +53,7 @@ public class SimpleHttpClient {
      * @throws URISyntaxException 输入的url不合法
      * @throws IOException
      */
-    public static String get(String url, Map<String, String> params) throws URISyntaxException, IOException {
+    public String get(String url, Map<String, String> params) throws URISyntaxException, IOException {
         List<NameValuePair> nameValuePairs = new ArrayList<>(params.size());
         nameValuePairs.addAll(params.entrySet().stream()
                 .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
@@ -69,16 +70,16 @@ public class SimpleHttpClient {
      * @throws URISyntaxException 输入的url不合法
      * @throws IOException
      */
-    public static String get(String url, List<NameValuePair> params) throws URISyntaxException, IOException {
+    public String get(String url, List<NameValuePair> params) throws URISyntaxException, IOException {
         // 1. 验证输入url的有效性：url没有有效的host或url为相对路径，则url无效。
         URI uri = (new URIBuilder(url)).build();
         HttpHost httpHost = URIUtils.extractHost(uri);
         if (httpHost == null) {
             throw new IllegalArgumentException("缺少有效的HOST");
         }
-        String respText = null;
+        String respText;
         // 2. 创建HttpClient对象
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = getHttpClient()) {
             // 3. 创建请求方法的实例，并指定请求URL。如果需要发送GET请求，创建HttpGet对象；如果需要发送POST请求，创建HttpPost对象。
             HttpGet httpGet = new HttpGet(uri);
             if (logger.isDebugEnabled()) {
@@ -104,7 +105,7 @@ public class SimpleHttpClient {
      * @throws URISyntaxException 输入的url不合法
      * @throws IOException
      */
-    public static String post(String url) throws URISyntaxException, IOException {
+    public String post(String url) throws URISyntaxException, IOException {
         return get(url);
     }
 
@@ -117,7 +118,7 @@ public class SimpleHttpClient {
      * @throws URISyntaxException 输入的url不合法
      * @throws IOException
      */
-    public static String post(String url, String postMessage) throws URISyntaxException, IOException {
+    public String post(String url, String postMessage) throws URISyntaxException, IOException {
         HttpEntity httpEntity = null;
         if (StringUtils.isNotEmpty(postMessage)) {
             httpEntity = new StringEntity(postMessage, Consts.UTF_8);
@@ -134,16 +135,16 @@ public class SimpleHttpClient {
      * @throws URISyntaxException 输入的url不合法
      * @throws IOException
      */
-    public static String post(String url, HttpEntity httpEntity) throws URISyntaxException, IOException {
+    public String post(String url, HttpEntity httpEntity) throws URISyntaxException, IOException {
         // 1. 验证输入url的有效性：url没有有效的host或url为相对路径，则url无效。
         URI uri = (new URIBuilder(url)).build();
         HttpHost httpHost = URIUtils.extractHost(uri);
         if (httpHost == null) {
             throw new IllegalArgumentException("缺少有效的HOST");
         }
-        String respText = null;
+        String respText;
         // 2. 创建HttpClient对象
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = getHttpClient()) {
             // 3. 创建请求方法的实例，并指定请求URL。如果需要发送GET请求，创建HttpGet对象；如果需要发送POST请求，创建HttpPost对象。
             HttpPost httpPost = new HttpPost(uri);
             if (logger.isDebugEnabled()) {
@@ -170,7 +171,7 @@ public class SimpleHttpClient {
      * @throws IOException
      * @throws URISyntaxException 如果返回为301或302跳转，则会调用GET请求，如果返回的url不正确，会抛出该异常。
      */
-    private static String execute(CloseableHttpClient client, HttpHost httpHost, HttpRequest httpRequest)
+    private String execute(CloseableHttpClient client, HttpHost httpHost, HttpRequest httpRequest)
             throws IOException, URISyntaxException {
         String respText = null;
         try (CloseableHttpResponse response = client.execute(httpHost, httpRequest)) {

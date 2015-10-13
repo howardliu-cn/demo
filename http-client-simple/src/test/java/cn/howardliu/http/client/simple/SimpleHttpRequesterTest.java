@@ -11,15 +11,15 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 
-public class SimpleHttpClientTest {
+public class SimpleHttpRequesterTest {
     @Test
     public void testGet() throws Exception {
-        assertNotNull(SimpleHttpClient.get("http://www.baidu.com"));
+        assertNotNull(SimpleHttpRequester.getHttpRequester().get("http://www.baidu.com"));
         Map<String, String> paramsMap = new HashMap<>();
         paramsMap.put("wd", "faljfdlasjflkjasdlfjlasjflkajflkdajslkfjsa");
-        assertNotNull(SimpleHttpClient.get("http://www.baidu.com/s", paramsMap));
+        assertNotNull(SimpleHttpRequester.getHttpRequester().get("http://www.baidu.com/s", paramsMap));
         List<NameValuePair> paramsList = new ArrayList<>();
         paramsList.add(new BasicNameValuePair("wd", "faljfdlasjflkjasdlfjlasjflkajflkdajslkfjsa"));
-        assertNotNull(SimpleHttpClient.get("http://www.baidu.com/s", paramsList));
+        assertNotNull(SimpleHttpRequester.getHttpRequester().get("http://www.baidu.com/s", paramsList));
     }
 }
