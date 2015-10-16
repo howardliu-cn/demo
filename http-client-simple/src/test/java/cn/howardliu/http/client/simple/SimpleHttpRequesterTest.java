@@ -22,4 +22,10 @@ public class SimpleHttpRequesterTest {
         paramsList.add(new BasicNameValuePair("wd", "faljfdlasjflkjasdlfjlasjflkajflkdajslkfjsa"));
         assertNotNull(SimpleHttpRequester.getHttpRequester().get("http://www.baidu.com/s", paramsList));
     }
+
+    @Test
+    public void testPost() throws Exception {
+        assertNotNull(SimpleHttpRequester.getHttpRequester()
+                .post("http://10.6.2.48:8042/pcm-inner-sdc/organization/selectShop.htm", "{\"itemCode\":40000100}"));
+    }
 }

@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -129,6 +130,23 @@ public abstract class HttpRequester {
     /**
      * POST方式请求url
      *
+     * @param url         请求地址
+     * @param postMessage 请求体，直接将参数写入POST请求的body中。
+     * @return url响应结果，java.lang.String类型。
+     * @throws URISyntaxException 输入的url不合法
+     * @throws IOException
+     */
+    public String post(String url, String postMessage, String contentType) throws URISyntaxException, IOException {
+        HttpEntity httpEntity = null;
+        if (StringUtils.isNotEmpty(postMessage)) {
+            httpEntity = new StringEntity(postMessage, Consts.UTF_8);
+        }
+        return post(url, httpEntity, contentType);
+    }
+
+    /**
+     * POST方式请求url
+     *
      * @param url        请求地址
      * @param httpEntity 请求实体，包含http请求所需参数。
      * @return url响应结果，java.lang.String类型。
@@ -136,6 +154,20 @@ public abstract class HttpRequester {
      * @throws IOException
      */
     public String post(String url, HttpEntity httpEntity) throws URISyntaxException, IOException {
+        return post(url, httpEntity, null);
+    }
+
+    /**
+     * POST方式请求url
+     *
+     * @param url         请求地址
+     * @param httpEntity  请求实体，包含http请求所需参数。
+     * @param contentType 请求头
+     * @return url响应结果，java.lang.String类型。
+     * @throws URISyntaxException 输入的url不合法
+     * @throws IOException
+     */
+    public String post(String url, HttpEntity httpEntity, String contentType) throws URISyntaxException, IOException {
         // 1. 验证输入url的有效性：url没有有效的host或url为相对路径，则url无效。
         URI uri = (new URIBuilder(url)).build();
         HttpHost httpHost = URIUtils.extractHost(uri);
@@ -155,11 +187,21 @@ public abstract class HttpRequester {
             if (httpEntity != null) {
                 httpPost.setEntity(httpEntity);
             }
+            if (contentType != null) {
+                httpPost.setHeader(HttpHeaders.CONTENT_TYPE, contentType);
+            } else {
+                httpPost.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_PLAIN.withCharset("UTF-8").getMimeType());
+            }
+            Header[] headers = httpPost.getAllHeaders();
+            for (Header h : headers) {
+                logger.info(h.getName() + "=" + h.getValue());
+            }
             // 5. 调用HttpClient对象的execute(HttpUriRequest request)发送请求，该方法返回一个HttpResponse。
             respText = execute(client, httpHost, httpPost);
         }
         return respText;
     }
+
 
     /**
      * 通过client，以httpRequest为请求参数，调用httpHost，并解析响应，返回{@code java.lang.String} 类型的响应内容。

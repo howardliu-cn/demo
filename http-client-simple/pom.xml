@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>http-client-simple</artifactId>
+    <packaging>jar</packaging>
     <properties>
         <dependency.httpcomponents.version>4.5.1</dependency.httpcomponents.version>
         <dependency.commons-lang3.version>3.4</dependency.commons-lang3.version>
