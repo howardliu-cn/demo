@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public abstract class HttpRequester {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public abstract CloseableHttpClient getHttpClient();
+    abstract CloseableHttpClient getHttpClient();
 
     /**
      * GET方式请求url，url中已经包含请求参数或不需要参数。

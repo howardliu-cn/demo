@@ -18,12 +18,12 @@ public class SimpleHttpRequester extends HttpRequester {
     private SimpleHttpRequester() {
     }
 
-    public static HttpRequester getHttpRequester() {
+    public static SimpleHttpRequester getHttpRequester() {
         return new SimpleHttpRequester();
     }
 
     @Override
-    public CloseableHttpClient getHttpClient() {
+    CloseableHttpClient getHttpClient() {
         return HttpClients.createDefault();
     }
 }
