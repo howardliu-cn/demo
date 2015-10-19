@@ -1,12 +1,9 @@
 package cn.howardliu.http.client.simple;
 
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.ContentEncodingHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <br/>create at 15-10-13
@@ -43,13 +40,18 @@ public class PoolingHttpRequester extends HttpRequester {
         return HttpClients.custom().setConnectionManager(_cm).build();
     }
 
-    public PoolingHttpRequester setConnPoolMaxTotal(int max) {
+    public PoolingHttpRequester setConnPoolMaxTotal(final int max) {
         _cm.setMaxTotal(max);
         return this;
     }
 
-    public PoolingHttpRequester setConnPoolMaxPerRoute( int max) {
+    public PoolingHttpRequester setConnPoolMaxPerRoute(final int max) {
         _cm.setDefaultMaxPerRoute(max);
+        return this;
+    }
+
+    public PoolingHttpRequester setConnPooMaxPerRoute(final HttpRoute route, final int max) {
+        _cm.setMaxPerRoute(route, max);
         return this;
     }
 }
