@@ -17,6 +17,7 @@
         <module>signature</module>
         <module>luceneDemo</module>
         <module>http-client-simple</module>
+        <module>solr-exercise</module>
     </modules>
     <dependencies>
         <dependency>
