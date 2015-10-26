@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+    <luceneMatchVersion>5.2.1</luceneMatchVersion>
+    <lib dir="${solr.install.dir:../../../..}/contrib/extraction/lib" regex=".*\.jar"/>
+    <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-cell-\d.*\.jar"/>
+
+    <lib dir="${solr.install.dir:../../../..}/contrib/clustering/lib/" regex=".*\.jar"/>
+    <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-clustering-\d.*\.jar"/>
+
+    <lib dir="${solr.install.dir:../../../..}/contrib/langid/lib/" regex=".*\.jar"/>
+    <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-langid-\d.*\.jar"/>
+
+    <lib dir="${solr.install.dir:../../../..}/contrib/velocity/lib" regex=".*\.jar"/>
+    <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-velocity-\d.*\.jar"/>
+    <!--
+       <lib path="../a-jar-that-does-not-exist.jar" />
+    -->
+    <dataDir>${solr.data.dir:}</dataDir>
+    <directoryFactory name="DirectoryFactory"
+                      class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/>
+    <codecFactory class="solr.SchemaCodecFactory"/>
+    <schemaFactory class="ClassicIndexSchemaFactory"/>
+    <indexConfig>
+        <writeLockTimeout>1000</writeLockTimeout>
+        <useCompoundFile>false</useCompoundFile>
+        <ramBufferSizeMB>512</ramBufferSizeMB>
+        <!-- <maxBufferedDocs>1000</maxBufferedDocs> -->
+        <!--
+            <mergePolicy class="org.apache.lucene.index.TieredMergePolicy">
+              <int name="maxMergeAtOnce">10</int>
+              <int name="segmentsPerTier">10</int>
+              <double name="noCFSRatio">0.1</double>
+            </mergePolicy>
+          -->
+        <mergeFactor>10</mergeFactor>
+        <!--
+           <mergeScheduler class="org.apache.lucene.index.ConcurrentMergeScheduler"/>
+           -->
+        <lockType>${solr.lock.type:single}</lockType>
+        <!--
+        <unlockOnStartup>false</unlockOnStartup>
+          -->
+        <!--
+        <deletionPolicy class="solr.SolrDeletionPolicy">
+        -->
+        <!-- <str name="maxCommitsToKeep">1</str> -->
+        <!-- <str name="maxOptimizedCommitsToKeep">0</str> -->
+        <!--
+           <str name="maxCommitAge">30MINUTES</str>
+           <str name="maxCommitAge">1DAY</str>
+        -->
+        <!--
+        </deletionPolicy>
+        -->
+        <infoStream>true</infoStream>
+    </indexConfig>
+    <jmx/>
+    <!-- <jmx agentId="myAgent" /> -->
+    <!-- <jmx serviceUrl="service:jmx:rmi:///jndi/rmi://localhost:9999/solr"/> -->
+    <updateHandler class="solr.DirectUpdateHandler2">
+        <updateLog>
+            <str name="dir">${solr.ulog.dir:}</str>
+            <int name="numVersionBuckets">${solr.ulog.numVersionBuckets:65536}</int>
+        </updateLog>
+        <autoCommit>
+            <maxTime>${solr.autoCommit.maxTime:15000}</maxTime>
+            <openSearcher>false</openSearcher>
+        </autoCommit>
+        <autoSoftCommit>
+            <maxTime>${solr.autoSoftCommit.maxTime:-1}</maxTime>
+        </autoSoftCommit>
+    </updateHandler>
+    <query>
+        <maxBooleanClauses>4096</maxBooleanClauses>
+        <slowQueryThresholdMillis>3000</slowQueryThresholdMillis>
+        <filterCache class="solr.FastLRUCache"
+                     size="10240"
+                     initialSize="512"
+                     autowarmCount="512"/>
+        <queryResultCache class="solr.LRUCache"
+                          size="10240"
+                          initialSize="512"
+                          autowarmCount="512"/>
+        <documentCache class="solr.LRUCache"
+                       size="10240"
+                       initialSize="512"
+                       autowarmCount="512"/>
+        <cache name="perSegFilter"
+               class="solr.search.LRUCache"
+               size="10"
+               initialSize="0"
+               autowarmCount="10"
+               regenerator="solr.NoOpRegenerator"/>
+        <fieldValueCache class="solr.FastLRUCache"
+                         size="512"
+                         autowarmCount="128"
+                         showItems="32"/>
+        <!--
+           <cache name="myUserCache"
+                  class="solr.LRUCache"
+                  size="4096"
+                  initialSize="1024"
+                  autowarmCount="1024"
+                  regenerator="com.mycompany.MyRegenerator"
+                  />
+          -->
+        <enableLazyFieldLoading>true</enableLazyFieldLoading>
+        <!--
+           <useFilterForSortedQuery>true</useFilterForSortedQuery>
+          -->
+        <queryResultWindowSize>100</queryResultWindowSize>
+        <queryResultMaxDocsCached>2000</queryResultMaxDocsCached>
+        <listener event="newSearcher" class="solr.QuerySenderListener">
+            <arr name="queries">
+                <!--
+                   <lst><str name="q">solr</str><str name="sort">price asc</str></lst>
+                   <lst><str name="q">rocks</str><str name="sort">weight asc</str></lst>
+                  -->
+            </arr>
+        </listener>
+        <listener event="firstSearcher" class="solr.QuerySenderListener">
+            <arr name="queries">
+                <lst>
+                    <str name="q">static firstSearcher warming in solrconfig.xml</str>
+                </lst>
+            </arr>
+        </listener>
+        <useColdSearcher>false</useColdSearcher>
+        <maxWarmingSearchers>2</maxWarmingSearchers>
+    </query>
+    <requestDispatcher handleSelect="false">
+        <requestParsers enableRemoteStreaming="true"
+                        multipartUploadLimitInKB="2048000"
+                        formdataUploadLimitInKB="2048"
+                        addHttpRequestToContext="false"/>
+        <httpCaching never304="true"/>
+    </requestDispatcher>
+    <requestHandler name="/select" class="solr.SearchHandler">
+        <lst name="defaults">
+            <str name="echoParams">explicit</str>
+            <int name="rows">10</int>
+            <!-- Controls the distribution of a query to shards other than itself.
+                 Consider making 'preferLocalShards' true when:
+                   1) maxShardsPerNode > 1
+                   2) Number of shards > 1
+                   3) CloudSolrClient or LbHttpSolrServer is used by clients.
+                 Without this option, every core broadcasts the distributed query to
+                 a replica of each shard where the replicas are chosen randomly.
+                 This option directs the cores to prefer cores hosted locally, thus
+                 preventing network delays between machines.
+                 This behavior also immunizes a bad/slow machine from slowing down all
+                 the good machines (if those good machines were querying this bad one).
+
+                 Specify this option=false for clients connecting through HttpSolrServer
+            -->
+            <!-- SolrJ 使用CloudSolrClient！  -->
+            <bool name="preferLocalShards">true</bool>
+        </lst>
+        <!--
+           <lst name="appends">
+             <str name="fq">inStock:true</str>
+           </lst>
+          -->
+        <!--
+           <lst name="invariants">
+             <str name="facet.field">cat</str>
+             <str name="facet.field">manu_exact</str>
+             <str name="facet.query">price:[* TO 500]</str>
+             <str name="facet.query">price:[500 TO *]</str>
+           </lst>
+          -->
+        <!--
+           <arr name="components">
+             <str>nameOfCustomComponent1</str>
+             <str>nameOfCustomComponent2</str>
+           </arr>
+          -->
+    </requestHandler>
+    <requestHandler name="/query" class="solr.SearchHandler">
+        <lst name="defaults">
+            <str name="echoParams">explicit</str>
+            <str name="wt">json</str>
+            <str name="indent">true</str>
+            <str name="df">searchAll</str>
+        </lst>
+    </requestHandler>
+    <requestHandler name="/export" class="solr.SearchHandler">
+        <lst name="invariants">
+            <str name="rq">{!xport}</str>
+            <str name="wt">xsort</str>
+            <str name="distrib">false</str>
+        </lst>
+        <arr name="components">
+            <str>query</str>
+        </arr>
+    </requestHandler>
+    <requestHandler name="/stream" class="solr.StreamHandler">
+        <lst name="invariants">
+            <str name="wt">json</str>
+            <str name="distrib">false</str>
+        </lst>
+    </requestHandler>
+    <requestHandler name="/update" class="solr.UpdateRequestHandler">
+    </requestHandler>
+    <initParams path="/update,/query,/select,/tvrh">
+        <lst name="defaults">
+            <str name="df">searchAll</str>
+        </lst>
+    </initParams>
+    <requestHandler name="/analysis/field"
+                    startup="lazy"
+                    class="solr.FieldAnalysisRequestHandler"/>
+    <requestHandler name="/analysis/document"
+                    class="solr.DocumentAnalysisRequestHandler"
+                    startup="lazy"/>
+    <!--
+       <requestHandler name="/admin/file"
+                       class="solr.admin.ShowFileRequestHandler" >
+         <lst name="invariants">
+           <str name="hidden">synonyms.txt</str>
+           <str name="hidden">anotherfile.txt</str>
+           <str name="hidden">*</str>
+         </lst>
+       </requestHandler>
+      -->
+    <requestHandler name="/debug/dump" class="solr.DumpRequestHandler">
+        <lst name="defaults">
+            <str name="echoParams">explicit</str>
+            <str name="echoHandler">true</str>
+        </lst>
+    </requestHandler>
+    <!--
+       <updateRequestProcessorChain name="dedupe">
+         <processor class="solr.processor.SignatureUpdateProcessorFactory">
+           <bool name="enabled">true</bool>
+           <str name="signatureField">id</str>
+           <bool name="overwriteDupes">false</bool>
+           <str name="fields">name,features,cat</str>
+           <str name="signatureClass">solr.processor.Lookup3Signature</str>
+         </processor>
+         <processor class="solr.LogUpdateProcessorFactory" />
+         <processor class="solr.RunUpdateProcessorFactory" />
+       </updateRequestProcessorChain>
+      -->
+    <!--
+     <updateRequestProcessorChain name="langid">
+       <processor class="org.apache.solr.update.processor.TikaLanguageIdentifierUpdateProcessorFactory">
+         <str name="langid.fl">text,title,subject,description</str>
+         <str name="langid.langField">language_s</str>
+         <str name="langid.fallback">en</str>
+       </processor>
+       <processor class="solr.LogUpdateProcessorFactory" />
+       <processor class="solr.RunUpdateProcessorFactory" />
+     </updateRequestProcessorChain>
+    -->
+    <!--
+      <updateRequestProcessorChain name="script">
+        <processor class="solr.StatelessScriptUpdateProcessorFactory">
+          <str name="script">update-script.js</str>
+          <lst name="params">
+            <str name="config_param">example config parameter</str>
+          </lst>
+        </processor>
+        <processor class="solr.RunUpdateProcessorFactory" />
+      </updateRequestProcessorChain>
+    -->
+    <queryResponseWriter name="json" class="solr.JSONResponseWriter">
+        <str name="content-type">text/plain; charset=UTF-8</str>
+    </queryResponseWriter>
+    <admin>
+        <defaultQuery>*:*</defaultQuery>
+    </admin>
+</config>
