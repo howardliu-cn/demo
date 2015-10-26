@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/cache
+                           http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <context:component-scan base-package="cn.howardliu.demo.redis"/>
+    <context:property-placeholder location="classpath:redis.properties" file-encoding="UTF-8"
+                                  ignore-unresolvable="true"/>
+    <bean id="redisClusterClient" class="com.lambdaworks.redis.cluster.RedisClusterClient" destroy-method="shutdown">
+        <constructor-arg name="initialUris">
+            <list>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23400"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23401"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23402"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23403"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23404"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23405"/>
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="asyncClusterConnection" factory-bean="redisClusterClient" factory-method="connectClusterAsync" destroy-method="close"/>
+    <bean id="clusterConnection" factory-bean="redisClusterClient" factory-method="connectCluster" destroy-method="close"/>
+
+    <cache:annotation-driven/>
+</beans>
