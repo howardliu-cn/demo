@@ -1,7 +1,7 @@
 package cn.howardliu.cache.redis.lettuce.cluster;
 
-import cn.howardliu.cache.redis.lettuce.Jackson2Serializer;
-import cn.howardliu.cache.redis.lettuce.StringValueSerializer;
+import cn.howardliu.cache.redis.common.Jackson2Serializer;
+import cn.howardliu.cache.redis.common.StringValueSerializer;
 import com.lambdaworks.redis.cluster.RedisAdvancedClusterConnection;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;

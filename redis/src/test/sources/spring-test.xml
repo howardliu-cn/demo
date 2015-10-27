@@ -39,7 +39,7 @@
         </property>
     </bean>
 
-    <bean id="stringRedisKeyGenerator" class="cn.howardliu.cache.redis.lettuce.StringRedisKeyGenerator"/>
+    <bean id="stringRedisKeyGenerator" class="cn.howardliu.cache.redis.common.StringRedisKeyGenerator"/>
 
     <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"/>
 

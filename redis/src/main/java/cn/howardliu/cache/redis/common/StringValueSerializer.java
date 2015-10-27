@@ -1,4 +1,4 @@
-package cn.howardliu.cache.redis.lettuce;
+package cn.howardliu.cache.redis.common;
 
 /**
  * <p>create at 15-10-22</p>

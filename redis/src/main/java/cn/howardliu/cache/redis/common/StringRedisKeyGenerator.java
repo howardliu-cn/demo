@@ -1,4 +1,4 @@
-package cn.howardliu.cache.redis.lettuce;
+package cn.howardliu.cache.redis.common;
 
 import org.springframework.cache.interceptor.KeyGenerator;
 
