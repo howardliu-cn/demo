@@ -10,7 +10,6 @@
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/cache
                            http://www.springframework.org/schema/cache/spring-cache.xsd">
-    <context:component-scan base-package="cn.howardliu.demo.redis"/>
     <context:property-placeholder location="classpath:redis.properties" file-encoding="UTF-8"
                                   ignore-unresolvable="true"/>
     <bean id="redisClusterClient" class="com.lambdaworks.redis.cluster.RedisClusterClient" destroy-method="shutdown">
@@ -27,6 +26,6 @@
     </bean>
     <bean id="asyncClusterConnection" factory-bean="redisClusterClient" factory-method="connectClusterAsync" destroy-method="close"/>
     <bean id="clusterConnection" factory-bean="redisClusterClient" factory-method="connectCluster" destroy-method="close"/>
-
     <cache:annotation-driven/>
+    <context:component-scan base-package="cn.howardliu.demo.redis"/>
 </beans>

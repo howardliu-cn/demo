@@ -1,4 +1,4 @@
-package cn.howardliu.demo.redis;
+package cn.howardliu.cache.redis.cluster.lettuce;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
