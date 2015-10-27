@@ -12,7 +12,7 @@
     catchall "searchAll" field, and use that for searching.
   - use the ConcurrentUpdateSolrServer java client.
 -->
-<schema name="online-category" version="1.5">
+<schema name="solr-exercise-time" version="1.5">
     <!--
          1.1: multiValued attribute introduced, false by default
          1.2: omitTermFreqAndPositions attribute introduced, true by default
@@ -75,35 +75,18 @@
     -->
     <field name="_root_" type="string" indexed="true" stored="false"/>
 
-    <!-- Only remove the "sid" field if you have a very good reason to. While not strictly
-      required, it is highly recommended. A <uniqueKey> is present in almost all Solr
-      installations. See the <uniqueKey> declaration below where <uniqueKey> is set to "sid".
-      Do NOT change the type and apply index-time analysis to the <uniqueKey> as it will likely
-      make routing in SolrCloud and document replacement in general fail. Limited _query_ time
-      analysis is possible as long as the indexing process is guaranteed to index the term
-      in a compatible way. Any analysis applied to the <uniqueKey> should _not_ produce multiple
-      tokens
-    -->
-    <!-- 分类编码 -->
-    <field name="categoryId" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 分类名称 -->
-    <field name="categoryName" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 是否叶子分类 -->
-    <field name="leafLevel" type="boolean" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 是否自建分类 -->
-    <field name="selfBuilt" type="boolean" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 所属根分类ID -->
-    <field name="rootCategoryId" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 父级分类ID -->
-    <field name="parentCategoryId" type="string" indexed="true" stored="true" required="false" multiValued="false"/>
-    <!-- 分类层级 -->
-    <field name="level" type="int" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 同级分类展示顺序 -->
-    <field name="order" type="int" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 分类编码路径 -->
-    <field name="idPath" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-    <!-- 操作记录号 -->
-    <field name="operationSid" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
+    <!-- general -->
+    <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
+    <field name="type" type="string" indexed="true" stored="true" multiValued="false"/>
+    <copyField source="type" dest="searchAll"/>
+    <field name="name" type="string" indexed="true" stored="true" multiValued="false"/>
+    <copyField source="name" dest="searchAll"/>
+    <field name="text" type="string" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="text" dest="searchAll"/>
+    <field name="createtime" type="date" indexed="true" stored="true" multiValued="false"/>
+    <copyField source="createtime" dest="searchAll"/>
+    <field name="currenttime" type="date" indexed="true" stored="true" multiValued="false"/>
+    <copyField source="currenttime" dest="searchAll"/>
 
     <!-- catchall field, containing all other searchable text fields (implemented
          via copyField further on in this schema  -->
@@ -127,7 +110,7 @@
     <!-- Field to use to determine and enforce document uniqueness.
          Unless this field is marked with required="false", it will be a required field
       -->
-    <uniqueKey>categoryId</uniqueKey>
+    <uniqueKey>id</uniqueKey>
 
     <!-- copyField commands copy one field to another at the time a document
           is added to the index.  It's used either to index the same field differently,
