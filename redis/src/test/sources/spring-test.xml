@@ -24,8 +24,24 @@
             </list>
         </constructor-arg>
     </bean>
-    <bean id="asyncClusterConnection" factory-bean="redisClusterClient" factory-method="connectClusterAsync" destroy-method="close"/>
-    <bean id="clusterConnection" factory-bean="redisClusterClient" factory-method="connectCluster" destroy-method="close"/>
-    <cache:annotation-driven/>
+    <bean id="asyncClusterConnection" factory-bean="redisClusterClient" factory-method="connectClusterAsync"
+          destroy-method="close"/>
+    <bean id="clusterConnection" factory-bean="redisClusterClient" factory-method="connectCluster"
+          destroy-method="close"/>
+
+    <bean id="cacheManager" class="cn.howardliu.cache.redis.lettuce.cluster.LettuceClusterCacheManager">
+        <constructor-arg ref="clusterConnection"/>
+        <property name="defaultExpiration" value="45000"/>
+        <property name="expires">
+            <map>
+                <entry key="books" value="15000"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="stringRedisKeyGenerator" class="cn.howardliu.cache.redis.lettuce.StringRedisKeyGenerator"/>
+
+    <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"/>
+
     <context:component-scan base-package="cn.howardliu.demo.redis"/>
 </beans>
