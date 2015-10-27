@@ -81,7 +81,7 @@
     <copyField source="type" dest="searchAll"/>
     <field name="name" type="string" indexed="true" stored="true" multiValued="false"/>
     <copyField source="name" dest="searchAll"/>
-    <field name="text" type="string" indexed="true" stored="false" multiValued="true"/>
+    <field name="text" type="text_ik" indexed="true" stored="false" multiValued="true"/>
     <copyField source="text" dest="searchAll"/>
     <field name="createtime" type="date" indexed="true" stored="true" multiValued="false"/>
     <copyField source="createtime" dest="searchAll"/>
@@ -215,4 +215,13 @@
          change the field name in the request.
      -->
     <fieldType name="random" class="solr.RandomSortField" indexed="true"/>
+
+    <fieldType name="text_ik" class="solr.TextField">
+        <analyzer type="index">
+            <tokenizer class="org.wltea.analyzer.lucene.IKTokenizerFactory" useSmart="false" />
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="org.wltea.analyzer.lucene.IKTokenizerFactory" useSmart="true" />
+        </analyzer>
+    </fieldType>
 </schema>
