@@ -16,6 +16,8 @@
  */
 package cn.howardliu.lucene.extension;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.synonym.SynonymFilterFactory;
@@ -101,7 +103,6 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
             super(resourceId, loader, storageIO);
         }
 
-        // TODO 需要分析同义词加载过程，将同义词文件中的定义添加到storage中
         @SuppressWarnings("unchecked")
         @Override
         protected void onManagedDataLoadedFromStorage(NamedList<?> managedInitArgs, Object managedData)
@@ -370,8 +371,7 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
                         // apply the case setting to match the behavior of the SynonymMap builder
                         String casedTerm = synonymManager.applyCaseSetting(ignoreCase, term);
                         String casedMapping = synonymManager.applyCaseSetting(ignoreCase, mapping);
-                        System.out.println(
-                                "*****************" + casedTerm + " => " + casedMapping + "*****************");
+                        log.info("load from storage, input is {}, output is {}", casedTerm, casedMapping);
                         add(new CharsRef(casedTerm), new CharsRef(casedMapping), false);
                     }
                 }
@@ -384,43 +384,33 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
                 if (line.length() == 0 || line.charAt(0) == '#') {
                     continue; // ignore empty lines and comments
                 }
-                // TODO: we could process this more efficiently.
+                Set<String> set = Sets.newHashSet();
                 String sides[] = split(line, "=>");
                 if (sides.length > 1) { // explicit mapping
                     if (sides.length != 2) {
                         throw new IllegalArgumentException("more than one explicit mapping specified on the same line");
                     }
                     String inputStrings[] = split(sides[0], ",");
-                    CharsRef[] inputs = new CharsRef[inputStrings.length];
-                    for (int i = 0; i < inputs.length; i++) {
-                        inputs[i] = analyze(unescape(inputStrings[i]).trim(), new CharsRefBuilder());
+                    for (String inputString : inputStrings) {
+                        set.add(analyze(unescape(inputString).trim(), new CharsRefBuilder()).toString());
                     }
-
                     String outputStrings[] = split(sides[1], ",");
-                    CharsRef[] outputs = new CharsRef[outputStrings.length];
-                    for (int i = 0; i < outputs.length; i++) {
-                        outputs[i] = analyze(unescape(outputStrings[i]).trim(), new CharsRefBuilder());
-                    }
-                    // these mappings are explicit and never preserve original
-                    for (CharsRef input : inputs) {
-                        for (CharsRef output : outputs) {
-                            System.out.println("&&&&&&&&&&&&&&&" + input + " => " + output + "&&&&&&&&&&&&&&&&");
-                            add(input, output, false);
-                        }
+                    for (String outputString : outputStrings) {
+                        set.add(analyze(unescape(outputString).trim(), new CharsRefBuilder()).toString());
                     }
                 } else {
                     String inputStrings[] = split(line, ",");
-                    CharsRef[] inputs = new CharsRef[inputStrings.length];
-                    for (int i = 0; i < inputs.length; i++) {
-                        inputs[i] = analyze(unescape(inputStrings[i]).trim(), new CharsRefBuilder());
+                    for (String inputString : inputStrings) {
+                        set.add(analyze(unescape(inputString).trim(), new CharsRefBuilder()).toString());
                     }
-                    // all subsequent inputs map to first one; we also add inputs[0] here
-                    // so that we "effectively" (because we remove the original input and
-                    // add back a synonym with the same text) change that token's type to
-                    // SYNONYM (matching legacy behavior):
-                    for (CharsRef input : inputs) {
-                        System.out.println("$$$$$$$$$$$$$$$$" + input + "=>" + inputs[0] + "$$$$$$$$$$$$$$$$");
-                        add(input, inputs[0], false);
+                }
+                for (String s : set) {
+                    Map<String, List<String>> map = new HashMap<>();
+                    map.put(s, Lists.newArrayList(set));
+                    Object updated = synonymManager.applyUpdatesToManagedData(map);
+                    if (updated != null) {
+                        log.info("load mappings from to storage, input is {}, output is {}", s, set);
+                        synonymManager.storeManagedData(updated);
                     }
                 }
             }
