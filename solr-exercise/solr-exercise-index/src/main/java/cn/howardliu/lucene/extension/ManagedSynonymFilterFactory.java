@@ -16,8 +16,7 @@
  */
 package cn.howardliu.lucene.extension;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.synonym.SynonymFilterFactory;
@@ -154,7 +153,7 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
         @Override
         protected Object applyUpdatesToManagedData(Object updates) {
             boolean ignoreCase = getIgnoreCase();
-            boolean madeChanges = false;
+            boolean madeChanges;
             if (updates instanceof List) {
                 madeChanges = applyListUpdates((List<String>) updates, ignoreCase);
             } else if (updates instanceof Map) {
@@ -209,12 +208,10 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
                 Object val = jsonMap.get(origTerm); // IMPORTANT: use the original
                 if (val instanceof String) {
                     String strVal = (String) val;
-
                     if (output == null) {
                         output = new TreeSet<>();
                         cpsm.mappings.put(origTerm, output);
                     }
-
                     if (output.add(strVal)) {
                         madeChanges = true;
                     }
@@ -231,12 +228,10 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
                             madeChanges = true;
                         }
                     }
-
                 } else {
                     throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "Unsupported value " + val +
                             " for " + term + "; expected single value or a JSON array!");
                 }
-
                 // only add the cpsm to the synonymMappings if it has valid data
                 if (!synonymMappings.containsKey(term) && cpsm.mappings.get(origTerm) != null) {
                     synonymMappings.put(term, cpsm);
@@ -365,6 +360,7 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
                 }
             }
             boolean ignoreCase = synonymManager.getIgnoreCase();
+            log.info("\n\n\nthis synonym mappings in storage is {}\n\n\n", synonymManager.synonymMappings);
             for (CasePreservedSynonymMappings cpsm : synonymManager.synonymMappings.values()) {
                 for (String term : cpsm.mappings.keySet()) {
                     for (String mapping : cpsm.mappings.get(term)) {
@@ -380,39 +376,47 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
 
         private void addInternal(BufferedReader in) throws IOException {
             String line;
+            Map<String, List<String>> fileMappings = new TreeMap<>();
             while ((line = in.readLine()) != null) {
                 if (line.length() == 0 || line.charAt(0) == '#') {
                     continue; // ignore empty lines and comments
                 }
-                Set<String> set = Sets.newHashSet();
                 String sides[] = split(line, "=>");
+                List<String> values = new ArrayList<>();
                 if (sides.length > 1) { // explicit mapping
+                    // 有明确方向的同义词定义，=>符号前的作为key，符号后的作为value队列。
                     if (sides.length != 2) {
                         throw new IllegalArgumentException("more than one explicit mapping specified on the same line");
                     }
                     String inputStrings[] = split(sides[0], ",");
                     for (String inputString : inputStrings) {
-                        set.add(analyze(unescape(inputString).trim(), new CharsRefBuilder()).toString());
+                        String key = analyze(unescape(inputString).trim(), new CharsRefBuilder()).toString();
+                        if (fileMappings.containsKey(key)) {
+                            values.addAll(fileMappings.get(key));
+                        }
+                        fileMappings.put(key, values);
                     }
                     String outputStrings[] = split(sides[1], ",");
                     for (String outputString : outputStrings) {
-                        set.add(analyze(unescape(outputString).trim(), new CharsRefBuilder()).toString());
+                        values.add(analyze(unescape(outputString).trim(), new CharsRefBuilder()).toString());
                     }
                 } else {
                     String inputStrings[] = split(line, ",");
                     for (String inputString : inputStrings) {
-                        set.add(analyze(unescape(inputString).trim(), new CharsRefBuilder()).toString());
+                        values.add(analyze(unescape(inputString).trim(), new CharsRefBuilder()).toString());
+                    }
+                    for (String key : values) {
+                        if (fileMappings.containsKey(key)) {
+                            values.addAll(fileMappings.get(key));
+                        }
+                        fileMappings.put(key, values);
                     }
                 }
-                for (String s : set) {
-                    Map<String, List<String>> map = new HashMap<>();
-                    map.put(s, Lists.newArrayList(set));
-                    Object updated = synonymManager.applyUpdatesToManagedData(map);
-                    if (updated != null) {
-                        log.info("load mappings from to storage, input is {}, output is {}", s, set);
-                        synonymManager.storeManagedData(updated);
-                    }
-                }
+            }
+            Object updated = synonymManager.applyUpdatesToManagedData(fileMappings);
+            if (updated != null) {
+                log.info("\n\n\nload mappings from file to storage, the synonym mappings is {}\n\n\n", fileMappings);
+                synonymManager.storeManagedData(updated);
             }
         }
 
@@ -510,7 +514,11 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
                         .onUnmappableCharacter(CodingErrorAction.REPORT);
                 ManagedSynonymParser parser = new ManagedSynonymParser((SynonymManager) res, dedup, analyzer);
                 // 加入同义词文件流
-                parser.parse(new InputStreamReader(loader.openResource(synonymFile), decoder));
+                InputStreamReader in = null;
+                if (StringUtils.isNotBlank(synonymFile)) {
+                    in = new InputStreamReader(loader.openResource(synonymFile), decoder);
+                }
+                parser.parse(in);
                 return parser.build();
             }
         };
