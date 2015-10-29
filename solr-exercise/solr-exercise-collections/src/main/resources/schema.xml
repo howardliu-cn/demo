@@ -219,9 +219,11 @@
     <fieldType name="text_ik" class="solr.TextField">
         <analyzer type="index">
             <tokenizer class="org.wltea.analyzer.lucene.IKTokenizerFactory" useSmart="false" />
+            <filter class="cn.howardliu.lucene.extension.ManagedSynonymFilterFactory" synonymFile="synonyms.txt" managed="managedSynonym" />
         </analyzer>
         <analyzer type="query">
             <tokenizer class="org.wltea.analyzer.lucene.IKTokenizerFactory" useSmart="true" />
+            <filter class="cn.howardliu.lucene.extension.ManagedSynonymFilterFactory" synonymFile="synonyms.txt" managed="managedSynonym" />
         </analyzer>
     </fieldType>
 </schema>

@@ -1,0 +1,49 @@
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#-----------------------------------------------------------------------
+#some test synonym mappings unlikely to appear in real input text
+aaafoo => aaabar
+bbbfoo => bbbfoo bbbbar
+cccfoo => cccbar cccbaz
+fooaaa,baraaa,bazaaa
+
+# Some synonym groups specific to this example
+GB,gib,gigabyte,gigabytes
+MB,mib,megabyte,megabytes
+Television, Televisions, TV, TVs
+#notice we use "gib" instead of "GiB" so any WordDelimiterFilter coming
+#after us won't split it into two words.
+
+# Synonym mappings can be used for spelling correction too
+pixima => pixma
+
+nike,耐克
+macwish,麦科威诗,麦科威
+匡威,converse
+上装,上衣
+西服,西装
+衬衫,衬衣
+t-shirt,T恤,tshirt
+连裤袜,裤袜
+泳衣,泳装
+阿迪,阿迪达斯,adidas
+非类,FEELEI-KISS
+行李箱,拉杆箱
+ascis,asics,亚瑟士
+男士,男,男式
+胸罩,文胸
+女士,女,女式
+伯内谛,burnetie
+维界,watchjady
+爱步,ecco
+添柏岚,Timberland
