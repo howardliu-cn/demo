@@ -101,6 +101,7 @@ public class ManagedSynonymFilterFactory extends BaseManagedTokenFilterFactory {
             super(resourceId, loader, storageIO);
         }
 
+        // TODO 需要分析同义词加载过程，将同义词文件中的定义添加到storage中
         @SuppressWarnings("unchecked")
         @Override
         protected void onManagedDataLoadedFromStorage(NamedList<?> managedInitArgs, Object managedData)
