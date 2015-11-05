@@ -14,8 +14,6 @@
     <context:component-scan base-package="cn.howardliu.demo.redis"/>
     <context:property-placeholder location="classpath:redis.properties" file-encoding="UTF-8"
                                   ignore-unresolvable="true"/>
-    <!-- turn on declarative caching -->
-    <cache:annotation-driven/>
     <!-- redis 相关配置 -->
     <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig" p:maxIdle="${redis.maxIdle}"
           p:maxWaitMillis="${redis.maxWaitMillis}" p:testOnBorrow="${redis.testOnBorrow}"/>
@@ -30,4 +28,7 @@
     <!-- declare Redis Cache Manager -->
     <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"
           c:template-ref="redisTemplate"/>
+    <bean id="stringRedisKeyGenerator" class="cn.howardliu.cache.redis.common.StringRedisKeyGenerator"/>
+    <!-- turn on declarative caching -->
+    <cache:annotation-driven cache-manager="cacheManager"/>
 </beans>

@@ -15,10 +15,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @since 1.0.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath*:spring.xml")
+@ContextConfiguration("classpath*:spring-test.xml")
 public class TestHelloService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
     @Autowired
     private IHelloService helloService;
 

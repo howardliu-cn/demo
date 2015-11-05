@@ -10,17 +10,15 @@
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/cache
                            http://www.springframework.org/schema/cache/spring-cache.xsd">
-    <context:property-placeholder location="classpath:redis.properties" file-encoding="UTF-8"
-                                  ignore-unresolvable="true"/>
     <bean id="redisClusterClient" class="com.lambdaworks.redis.cluster.RedisClusterClient" destroy-method="shutdown">
         <constructor-arg name="initialUris">
             <list>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23400"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23401"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23402"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23403"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23404"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="23405"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="127.0.0.1" p:port="12340"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="127.0.0.1" p:port="12341"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="127.0.0.1" p:port="12342"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="127.0.0.1" p:port="12343"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="127.0.0.1" p:port="12344"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="127.0.0.1" p:port="12345"/>
             </list>
         </constructor-arg>
     </bean>

@@ -26,6 +26,7 @@ public class LettuceClusterCacheManager extends AbstractCacheManager {
 
     public LettuceClusterCacheManager(
             RedisAdvancedClusterConnection<String, String> connection) {
+        logger.info("init LettuceClusterCacheManager...");
         this.connection = Validate.notNull(connection);
     }
 
