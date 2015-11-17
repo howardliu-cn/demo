@@ -18,6 +18,7 @@
         <module>luceneDemo</module>
         <module>http-client-simple</module>
         <module>solr-exercise</module>
+        <module>miner</module>
     </modules>
     <dependencies>
         <dependency>
