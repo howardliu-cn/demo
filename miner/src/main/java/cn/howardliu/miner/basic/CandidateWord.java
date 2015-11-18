@@ -1,4 +1,4 @@
-package cn.howardliu.miner;
+package cn.howardliu.miner.basic;
 
 import java.util.HashMap;
 import java.util.Map;

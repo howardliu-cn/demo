@@ -1,5 +1,6 @@
-package cn.howardliu.miner;
+package cn.howardliu.miner.basic;
 
+import cn.howardliu.miner.CharacterUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,6 @@ public class NewWordTest {
     String resultFileName = "out2-no-one-character-word.txt";
 
     public void test() throws IOException {
-        Map<String, CandidateWord> agglomerationDegreeMap = new HashMap<>();
         long total = 0;
         Map<String, CandidateWord> map = new HashMap<>();
         List<String> strings = new ArrayList<>();
@@ -136,7 +136,6 @@ public class NewWordTest {
             } catch (IOException e) {
                 logger.error("写数据出错", e);
             }
-            agglomerationDegreeMap.put(w.word, w);
         });
         writer.flush();
         writer.close();
