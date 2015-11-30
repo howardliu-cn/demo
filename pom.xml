@@ -19,6 +19,7 @@
         <module>http-client-simple</module>
         <module>solr-exercise</module>
         <module>miner</module>
+        <module>mongodb-demo</module>
     </modules>
     <dependencies>
         <dependency>
