@@ -20,6 +20,7 @@
         <module>solr-exercise</module>
         <module>miner</module>
         <module>mongodb-demo</module>
+        <module>storm</module>
     </modules>
     <dependencies>
         <dependency>
