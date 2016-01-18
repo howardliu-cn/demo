@@ -18,7 +18,7 @@
         </encoder>
     </appender>
     <appender name="kafka" class="cn.howardliu.demo.storm.log2Kafka.KafkaAppender">
-        <topic>foo</topic>
+        <topic>test-sentence-topic</topic>
         <zookeeperHost>10.6.2.55:2181</zookeeperHost>
         <formatter class="cn.howardliu.demo.storm.log2Kafka.JsonFormatter">
             <expectJson>false</expectJson>
