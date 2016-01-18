@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -50,13 +49,14 @@ public class SentenceSpout extends BaseRichSpout {
         Values values = new Values(sentences[index]);
         UUID msgId = UUID.randomUUID();
         this.pending.put(msgId, values);
+        logger.debug("sentence is {}, the msgId is {} ", values, msgId);
         this.collector.emit(values, msgId);
         index++;
-        if(index >= sentences.length) {
+        if (index >= sentences.length) {
             index = 0;
         }
         try {
-            TimeUnit.MILLISECONDS.sleep(1);
+            TimeUnit.MILLISECONDS.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

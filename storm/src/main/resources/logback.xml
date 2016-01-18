@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="log.home" value="/opt/storm/logs/togology"/>
+    <property name="log.name" value="wordCount"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.home}/${log.name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.home}/${log.name}.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="kafka" class="cn.howardliu.demo.storm.log2Kafka.KafkaAppender">
+        <topic>foo</topic>
+        <zookeeperHost>10.6.2.55:2181</zookeeperHost>
+        <formatter class="cn.howardliu.demo.storm.log2Kafka.JsonFormatter">
+            <expectJson>false</expectJson>
+        </formatter>
+    </appender>
+
+    <logger name="cn.howardliu.demo.storm.wordCount" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="filelog"/>
+        <appender-ref ref="kafka"/>
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="filelog"/>
+        <appender-ref ref="kafka"/>
+    </root>
+</configuration>

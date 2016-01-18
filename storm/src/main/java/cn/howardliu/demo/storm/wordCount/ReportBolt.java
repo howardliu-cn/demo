@@ -30,6 +30,14 @@ public class ReportBolt extends BaseRichBolt {
         String word = tuple.getStringByField("word");
         Long count = tuple.getLongByField("count");
         this.counts.put(word, count);
+        logger.info("-------------FINAL COUNTS BEGIN-------------");
+        List<String> keys = new ArrayList<>();
+        keys.addAll(this.counts.keySet());
+        Collections.sort(keys);
+        for (String key : keys) {
+            logger.info(key + " : " + this.counts.get(key));
+        }
+        logger.info("-------------FINAL COUNTS END-------------");
     }
 
     @Override

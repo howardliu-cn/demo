@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WordCountTopology {
     private static final Logger logger = LoggerFactory.getLogger(WordCountTopology.class);
-    private static final String SENTENCE_SPOUT_ID = "sentence-sput";
+    private static final String SENTENCE_SPOUT_ID = "sentence-spout";
     private static final String SPLIT_BOLT_ID = "split-bolt";
     private static final String COUNT_BOLT_ID = "count-bolt";
     private static final String REPORT_BOLT_ID = "report-bolt";
@@ -51,6 +51,7 @@ public class WordCountTopology {
             cluster.shutdown();
         } else {
             StormSubmitter.submitTopology(args[0], config, builder.createTopology());
+            logger.info("================= the word count topology is submitted =================");
         }
     }
 }
