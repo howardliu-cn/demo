@@ -28,12 +28,17 @@ public class WordCountTopology {
     private static final String WORD_COUNT_BOLT_ID = "sentence-word-count-bolt";
     private static final String REPORT_BOLT_ID = "sentence-report-bolt";
     private static final String KAFKA_BOLT_ID = "sentence-kafka-bolt";
+    private static final String CONSUME_TOPIC = "sentenceTopic";
+    private static final String PRODUCT_TOPIC = "wordCountTopic";
+    private static final String ZK_ROOT = "/rootKafkaTopic";
+    private static final String ZK_ID = "wordCountId";
+    private static final String DEFAULT_TOPOLOGY_NAME = "sentenceWordCountKafka";
 
     public static void main(String[] args) throws Exception {
         // 配置Zookeeper地址
         BrokerHosts brokerHosts = new ZkHosts("zk1:2181,zk2:2281,zk3:2381");
         // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
-        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "sentenceTopic", "/rootKafkaTopic", "wordCount");
+        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, CONSUME_TOPIC, ZK_ROOT, ZK_ID);
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
 
         TopologyBuilder builder = new TopologyBuilder();
@@ -49,13 +54,13 @@ public class WordCountTopology {
         props.put("metadata.broker.list", "dev2_55.wfj-search:9092");// 配置Kafka broker地址
         props.put("serializer.class", "kafka.serializer.StringEncoder");// serializer.class为消息的序列化类
         config.put("kafka.broker.properties", props);// 配置KafkaBolt中的kafka.broker.properties
-        config.put("topic", "wordCountTopic");// 配置KafkaBolt生成的topic
+        config.put("topic", PRODUCT_TOPIC);// 配置KafkaBolt生成的topic
 
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("sentence-word-count-kafka", config, builder.createTopology());
+            cluster.submitTopology(DEFAULT_TOPOLOGY_NAME, config, builder.createTopology());
             Utils.sleep(100000);
-            cluster.killTopology("sentence-word-count-kafka");
+            cluster.killTopology(DEFAULT_TOPOLOGY_NAME);
             cluster.shutdown();
         } else {
             config.setNumWorkers(3);

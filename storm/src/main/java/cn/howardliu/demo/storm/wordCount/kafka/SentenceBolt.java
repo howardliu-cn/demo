@@ -6,6 +6,8 @@ import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <br/>create at 16-1-19
@@ -14,9 +16,13 @@ import backtype.storm.tuple.Values;
  * @since 1.0.0
  */
 public class SentenceBolt extends BaseBasicBolt {
+    private static final Logger logger = LoggerFactory.getLogger(SentenceBolt.class);
+
     @Override
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
-        basicOutputCollector.emit(new Values(tuple.getStringByField("msg")));
+        String msg = tuple.getStringByField("msg");
+        logger.info("get one message is {}", msg);
+        basicOutputCollector.emit(new Values(msg));
     }
 
     @Override
