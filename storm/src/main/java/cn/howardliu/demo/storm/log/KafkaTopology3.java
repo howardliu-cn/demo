@@ -13,8 +13,6 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import storm.kafka.BrokerHosts;
 import storm.kafka.KafkaSpout;
 import storm.kafka.SpoutConfig;
@@ -31,14 +29,12 @@ import java.util.Properties;
  * @author liuxh
  * @since 1.0.0
  */
-public class TopicMsgTopology {
-    private static final Logger logger = LoggerFactory.getLogger(TopicMsgTopology.class);
-
+public class KafkaTopology3 {
     public static void main(String[] args) throws Exception {
         // 配置Zookeeper地址
         BrokerHosts brokerHosts = new ZkHosts("zk1:2181,zk2:2281,zk3:2381");
         // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
-        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "msgTopic1", "/zkKafkaSpout", "msgKafkaSpout");
+        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "topic1", "/zkkafkaspout", "kafkaspout");
         // 配置KafkaBolt中的kafka.broker.properties
         Config conf = new Config();
         Properties props = new Properties();
@@ -48,18 +44,17 @@ public class TopicMsgTopology {
         props.put("serializer.class", "kafka.serializer.StringEncoder");
         conf.put("kafka.broker.properties", props);
         // 配置KafkaBolt生成的topic
-        conf.put("topic", "msgTopic2");
+        conf.put("topic", "topic2");
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout("msgKafkaSpout", new KafkaSpout(spoutConfig));
-        builder.setBolt("msgSentenceBolt", new SentenceBolt()).shuffleGrouping("msgKafkaSpout");
-        builder.setBolt("msgKafkaBolt", new KafkaBolt<String, Integer>()).shuffleGrouping("msgSentenceBolt");
+        builder.setSpout("spout", new KafkaSpout(spoutConfig));
+        builder.setBolt("bolt", new SentenceBolt()).shuffleGrouping("spout");
+        builder.setBolt("kafkabolt", new KafkaBolt<String, Integer>()).shuffleGrouping("bolt");
         if (args.length == 0) {
-            String topologyName = "kafkaTopicTopology";
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology(topologyName, conf, builder.createTopology());
+            cluster.submitTopology("Topo", conf, builder.createTopology());
             Utils.sleep(100000);
-            cluster.killTopology(topologyName);
+            cluster.killTopology("Topo");
             cluster.shutdown();
         } else {
             conf.setNumWorkers(3);
@@ -71,8 +66,8 @@ public class TopicMsgTopology {
         @Override
         public void execute(Tuple input, BasicOutputCollector collector) {
             String word = (String) input.getValue(0);
-            String out = "Message got is '" + word + "'!";
-            logger.info("out={}", out);
+            String out = "I'm " + word + "!";
+            System.out.println("out=" + out);
             collector.emit(new Values(out));
         }
 

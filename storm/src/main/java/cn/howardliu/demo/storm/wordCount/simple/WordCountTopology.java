@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.wordCount;
+package cn.howardliu.demo.storm.wordCount.simple;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
