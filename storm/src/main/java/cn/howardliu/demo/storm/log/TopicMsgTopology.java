@@ -22,9 +22,7 @@ import storm.kafka.ZkHosts;
 import storm.kafka.bolt.KafkaBolt;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -33,19 +31,19 @@ import java.util.Properties;
  * @author liuxh
  * @since 1.0.0
  */
-public class KafkaTopology3 {
-    private static final Logger logger = LoggerFactory.getLogger(KafkaTopology3.class);
+public class TopicMsgTopology {
+    private static final Logger logger = LoggerFactory.getLogger(TopicMsgTopology.class);
 
     public static void main(String[] args) throws Exception {
         // 配置Zookeeper地址
         BrokerHosts brokerHosts = new ZkHosts("zk1:2181,zk2:2281,zk3:2381");
         // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
-        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "topic1", "/zkkafkaspout", "kafkaspout");
+        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "topic1", "/zkKafkaSpout", "kafkaSpout");
         // 配置KafkaBolt中的kafka.broker.properties
         Config conf = new Config();
         Properties props = new Properties();
         // 配置Kafka broker地址
-        props.put("metadata.broker.list", "dev2_55.wfj-search:9092");
+        props.put("metadata.broker.list", "kafka:9092");
         // serializer.class为消息的序列化类
         props.put("serializer.class", "kafka.serializer.StringEncoder");
         conf.put("kafka.broker.properties", props);
@@ -53,14 +51,15 @@ public class KafkaTopology3 {
         conf.put("topic", "topic2");
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout("spout", new KafkaSpout(spoutConfig));
-        builder.setBolt("bolt", new SentenceBolt()).shuffleGrouping("spout");
-        builder.setBolt("kafkabolt", new KafkaBolt<String, Integer>()).shuffleGrouping("bolt");
+        builder.setSpout("kafkaSpout", new KafkaSpout(spoutConfig));
+        builder.setBolt("sentenceBolt", new SentenceBolt()).shuffleGrouping("kafkaSpout");
+        builder.setBolt("kafkaBolt", new KafkaBolt<String, Integer>()).shuffleGrouping("sentenceBolt");
         if (args.length == 0) {
+            String topologyName = "kafka-topic-topology";
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("Topo", conf, builder.createTopology());
+            cluster.submitTopology(topologyName, conf, builder.createTopology());
             Utils.sleep(100000);
-            cluster.killTopology("Topo");
+            cluster.killTopology(topologyName);
             cluster.shutdown();
         } else {
             conf.setNumWorkers(3);
@@ -72,8 +71,8 @@ public class KafkaTopology3 {
         @Override
         public void execute(Tuple input, BasicOutputCollector collector) {
             String word = (String) input.getValue(0);
-            String out = "I'm " + word + "!";
-            System.out.println("out=" + out);
+            String out = "Message got is '" + word + "'!";
+            logger.info("out={}", out);
             collector.emit(new Values(out));
         }
 
