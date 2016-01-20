@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.wordCount.kafka;
+package cn.howardliu.demo.storm.kafka;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <br/>create at 16-1-19
+ * <br/>create at 16-1-20
  *
  * @author liuxh
  * @since 1.0.0

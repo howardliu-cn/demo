@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.wordCount.newer;
+package cn.howardliu.demo.storm.kafka;
 
 import backtype.storm.spout.Scheme;
 import backtype.storm.tuple.Fields;
@@ -22,8 +22,9 @@ public class MessageScheme implements Scheme {
     public List<Object> deserialize(byte[] ser) {
         try {
             String msg = new String(ser, "UTF-8");
+            logger.info("get one message is {}", msg);
             return new Values(msg);
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException ignored) {
             return null;
         }
     }
