@@ -7,10 +7,7 @@ import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 import backtype.storm.utils.Utils;
-import storm.kafka.BrokerHosts;
-import storm.kafka.KafkaSpout;
-import storm.kafka.SpoutConfig;
-import storm.kafka.ZkHosts;
+import storm.kafka.*;
 import storm.kafka.bolt.KafkaBolt;
 
 import java.util.Properties;
@@ -22,16 +19,16 @@ import java.util.Properties;
  * @since 1.0.0
  */
 public class WordCountTopology {
-    private static final String KAFKA_SPOUT_ID = "sentence-kafka-spout";
-    private static final String SENTENCE_BOLT_ID = "sentence-bolt";
-    private static final String SPLIT_BOLT_ID = "sentence-split-bolt";
-    private static final String WORD_COUNT_BOLT_ID = "sentence-word-count-bolt";
-    private static final String REPORT_BOLT_ID = "sentence-report-bolt";
-    private static final String KAFKA_BOLT_ID = "sentence-kafka-bolt";
+    private static final String KAFKA_SPOUT_ID = "spout";
+    private static final String SENTENCE_BOLT_ID = "sentenceBolt";
+    private static final String SPLIT_BOLT_ID = "sentenceSplitBolt";
+    private static final String WORD_COUNT_BOLT_ID = "sentenceWordCountBolt";
+    private static final String REPORT_BOLT_ID = "sentenceReportBolt";
+    private static final String KAFKA_BOLT_ID = "kafkabolt";
     private static final String CONSUME_TOPIC = "sentenceTopic";
     private static final String PRODUCT_TOPIC = "wordCountTopic";
-    private static final String ZK_ROOT = "/rootKafkaTopic";
-    private static final String ZK_ID = "wordCountId";
+    private static final String ZK_ROOT = "/zkkafkaspout";
+    private static final String ZK_ID = "kafkaspout";
     private static final String DEFAULT_TOPOLOGY_NAME = "sentenceWordCountKafka";
 
     public static void main(String[] args) throws Exception {
@@ -42,7 +39,7 @@ public class WordCountTopology {
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
 
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout(KAFKA_SPOUT_ID, new KafkaSpout(spoutConfig));
+        builder.setSpout(KAFKA_SPOUT_ID, new MyKafkaSpout(spoutConfig));
         builder.setBolt(SENTENCE_BOLT_ID, new SentenceBolt()).shuffleGrouping(KAFKA_SPOUT_ID);
         builder.setBolt(SPLIT_BOLT_ID, new SplitSentenceBolt()).shuffleGrouping(SENTENCE_BOLT_ID);
         builder.setBolt(WORD_COUNT_BOLT_ID, new WordCountBolt()).fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
@@ -59,11 +56,11 @@ public class WordCountTopology {
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology(DEFAULT_TOPOLOGY_NAME, config, builder.createTopology());
-            Utils.sleep(100000);
-            cluster.killTopology(DEFAULT_TOPOLOGY_NAME);
-            cluster.shutdown();
+//            Utils.sleep(100000);
+//            cluster.killTopology(DEFAULT_TOPOLOGY_NAME);
+//            cluster.shutdown();
         } else {
-            config.setNumWorkers(3);
+            config.setNumWorkers(1);
             StormSubmitter.submitTopology(args[0], config, builder.createTopology());
         }
     }
