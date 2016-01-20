@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.kafka;
+package cn.howardliu.demo.storm.kafka.wordCount;
 
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;

@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.kafka;
+package cn.howardliu.demo.storm.kafka.wordCount;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;

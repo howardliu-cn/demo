@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.kafka;
+package cn.howardliu.demo.storm.kafka.wordCount;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
@@ -7,6 +7,7 @@ import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 import backtype.storm.utils.Utils;
+import cn.howardliu.demo.storm.kafka.MessageScheme;
 import storm.kafka.*;
 import storm.kafka.bolt.KafkaBolt;
 
@@ -28,8 +29,8 @@ public class WordCountTopology {
     private static final String KAFKA_BOLT_ID = "kafkabolt";
     private static final String CONSUME_TOPIC = "sentenceTopic";
     private static final String PRODUCT_TOPIC = "wordCountTopic";
-    private static final String ZK_ROOT = "/topology/root/wordCount";
-    private static final String ZK_ID = "kafkaspout";
+    private static final String ZK_ROOT = "/topology/root";
+    private static final String ZK_ID = "wordCount";
     private static final String DEFAULT_TOPOLOGY_NAME = "sentenceWordCountKafka";
 
     public static void main(String[] args) throws Exception {

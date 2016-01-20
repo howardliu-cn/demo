@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.kafka;
+package cn.howardliu.demo.storm.kafka.wordCount;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
@@ -15,18 +15,17 @@ import org.slf4j.LoggerFactory;
  * @author liuxh
  * @since 1.0.0
  */
-public class SentenceBolt extends BaseBasicBolt {
-    private static final Logger logger = LoggerFactory.getLogger(SentenceBolt.class);
-
+public class ReportBolt extends BaseBasicBolt {
     @Override
-    public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
-        String msg = tuple.getStringByField("msg");
-        logger.info("get one message is {}", msg);
-        basicOutputCollector.emit(new Values(msg));
+    public void execute(Tuple input, BasicOutputCollector collector) {
+        String word = input.getStringByField("word");
+        Long count = input.getLongByField("count");
+        String reportMessage = "{'word': '" + word + "', 'count': '" + count + "'}";
+        collector.emit(new Values(reportMessage));
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("sentence"));
+        outputFieldsDeclarer.declare(new Fields("message"));
     }
 }
