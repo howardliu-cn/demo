@@ -7,6 +7,7 @@ import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 import backtype.storm.utils.Utils;
+import cn.howardliu.demo.storm.kafka.BaseConfigConstants;
 import cn.howardliu.demo.storm.kafka.MessageScheme;
 import storm.kafka.*;
 import storm.kafka.bolt.KafkaBolt;
@@ -21,12 +22,12 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class WordCountTopology {
-    private static final String KAFKA_SPOUT_ID = "kafkaSpout";
+    private static final String KAFKA_SPOUT_ID = "sentenceKafkaSpout";
     private static final String SENTENCE_BOLT_ID = "sentenceBolt";
     private static final String SPLIT_BOLT_ID = "sentenceSplitBolt";
     private static final String WORD_COUNT_BOLT_ID = "sentenceWordCountBolt";
-    private static final String REPORT_BOLT_ID = "reportBolt";
-    private static final String KAFKA_BOLT_ID = "kafkabolt";
+    private static final String REPORT_BOLT_ID = "sentenceReportBolt";
+    private static final String KAFKA_BOLT_ID = "sentenceKafkabolt";
     private static final String CONSUME_TOPIC = "sentenceTopic";
     private static final String PRODUCT_TOPIC = "wordCountTopic";
     private static final String ZK_ROOT = "/topology/root";
@@ -35,7 +36,7 @@ public class WordCountTopology {
 
     public static void main(String[] args) throws Exception {
         // 配置Zookeeper地址
-        BrokerHosts brokerHosts = new ZkHosts("zk1:2181,zk2:2281,zk3:2381");
+        BrokerHosts brokerHosts = new ZkHosts(BaseConfigConstants.ZK_SERVER);
         // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
         SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, CONSUME_TOPIC, ZK_ROOT, ZK_ID);
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
@@ -50,7 +51,7 @@ public class WordCountTopology {
 
         Config config = new Config();
         Map<String, String> map = new HashMap<>();
-        map.put("metadata.broker.list", "dev2_55.wfj-search:9092");// 配置Kafka broker地址
+        map.put("metadata.broker.list", BaseConfigConstants.BROKER_SERVER);// 配置Kafka broker地址
         map.put("serializer.class", "kafka.serializer.StringEncoder");// serializer.class为消息的序列化类
         config.put("kafka.broker.properties", map);// 配置KafkaBolt中的kafka.broker.properties
         config.put("topic", PRODUCT_TOPIC);// 配置KafkaBolt生成的topic
