@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+	<property>
+		<!-- 当前集群NameNode的IP地址和端口号。2.0前使用fs.default.name，但后续兼容-->
+		<name>fs.default.name</name>
+		<value>hdfs://10.6.2.56:9000</value>
+	</property>
+	<property>
+		<!--设置临时文件目录-->
+		<name>hadoop.tmp.dir</name>
+		<!-- 当前用户须要对此目录有读写权限。可使用命令sudo chown -hR hadoop /home/hadoop-2.3.0/ -->
+		<value>/data/hadoop/tmp</value>
+	</property>
+</configuration>

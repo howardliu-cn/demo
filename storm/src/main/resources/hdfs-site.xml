@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+	<property>
+		<name>dfs.data.dir</name>
+		<value>/data/hadoop/data</value>
+	</property>
+	 <property>
+	         <name>dfs.name.dir</name>
+	         <value>/data/hadoop/name</value>
+	         </property>
+	<property>
+		<name>dfs.replication</name>
+		<value>3</value>
+	</property>
+	<property>
+	        <name>dfs.http.address</name>
+	        <value>10.6.2.56:50070</value>
+	        <description>NameNode web管理端口</description>
+	</property>
+	<property>
+		<name>sfs.permissions</name>
+		<value>false</value>
+		<description>cancel the different user's authentication</description>
+	</property>
+	
+	 <property>
+	 	<name>dfs.datanode.max.xcievers</name>
+	 	<value>4096</value>
+	 	<description>Hadoop HDFS Datanode 有一个同时处理文件的上限</description>
+	 </property>
+</configuration>

@@ -38,10 +38,10 @@ public class WordCount2HBaseTopology {
     private static final String REPORT_BOLT_ID = "sentence2HBaseReportBolt";
     private static final String KAFKA_BOLT_ID = "sentence2HBaseKafkabolt";
     private static final String HBASE_BOLT_ID = "sentence2HBaseBolt";
-    private static final String CONSUME_TOPIC = "sentenceTopic";
+    private static final String CONSUME_TOPIC = "test";
     private static final String PRODUCT_TOPIC = "wordCountTopic";
     private static final String ZK_ROOT = "/topology/root";
-    private static final String ZK_ID = "wordCountHBase";
+    private static final String ZK_ID = "wordCount2HBase";
     private static final String DEFAULT_TOPOLOGY_NAME = "sentenceHBaseWordCountKafka";
 
     public static void main(String[] args) throws Exception {
@@ -51,31 +51,33 @@ public class WordCount2HBaseTopology {
         SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, CONSUME_TOPIC, ZK_ROOT, ZK_ID);
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
 
-        SimpleHBaseMapper mapper = new SimpleHBaseMapper()
-                .withRowKeyField("word")
-                .withColumnFamily("cf")
-                .withColumnFields(new Fields("word"))
-                .withCounterFields(new Fields("count"));
-        HBaseBolt hBaseBolt = new HBaseBolt("WordCount", mapper);
-
-        TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout(KAFKA_SPOUT_ID, new KafkaSpout(spoutConfig));
-        builder.setBolt(SENTENCE_BOLT_ID, new SentenceBolt()).shuffleGrouping(KAFKA_SPOUT_ID);
-        builder.setBolt(SPLIT_BOLT_ID, new SplitSentenceBolt()).shuffleGrouping(KAFKA_SPOUT_ID);
-        builder.setBolt(WORD_COUNT_BOLT_ID, new WordCountBolt()).fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
-        builder.setBolt(REPORT_BOLT_ID, new ReportBolt()).shuffleGrouping(WORD_COUNT_BOLT_ID);
-        builder.setBolt(HBASE_BOLT_ID, hBaseBolt).fieldsGrouping(WORD_COUNT_BOLT_ID, new Fields("word"));
-        builder.setBolt(KAFKA_BOLT_ID, new KafkaBolt<String, Long>()).shuffleGrouping(REPORT_BOLT_ID);
-
         Config config = new Config();
         Map<String, String> map = new HashMap<>();
         map.put("metadata.broker.list", BaseConfigConstants.BROKER_SERVER);// 配置Kafka broker地址
         map.put("serializer.class", "kafka.serializer.StringEncoder");// serializer.class为消息的序列化类
         config.put("kafka.broker.properties", map);// 配置KafkaBolt中的kafka.broker.properties
         config.put("topic", PRODUCT_TOPIC);// 配置KafkaBolt生成的topic
-//        // TODO 配置Kerberos keytab与principle
-//        config.put("storm.keytab.file", "$keytab");
-//        config.put("storm.kerberos.principal", "$principle");
+        Map<String, Object> hbaseMap = new HashMap<>();
+        hbaseMap.put("hbase.zookeeper.property.clientPort", 2181);
+        hbaseMap.put("hbase.zookeeper.quorum", "10.6.2.56,10.6.2.57,10.6.2.58");
+        config.put("hbaseConfigKey", hbaseMap);
+
+//        SimpleHBaseMapper mapper = new SimpleHBaseMapper()
+//                .withRowKeyField("word")
+//                .withColumnFamily("cf")
+//                .withColumnFields(new Fields("word"))
+//                .withCounterFields(new Fields("count"));
+//        HBaseBolt hBaseBolt = new HBaseBolt("WordCount", mapper)
+//                .withConfigKey("hbaseConfigKey");
+
+        TopologyBuilder builder = new TopologyBuilder();
+        builder.setSpout(KAFKA_SPOUT_ID, new KafkaSpout(spoutConfig));
+        builder.setBolt(SENTENCE_BOLT_ID, new SentenceBolt()).shuffleGrouping(KAFKA_SPOUT_ID);
+        builder.setBolt(SPLIT_BOLT_ID, new SplitSentenceBolt()).shuffleGrouping(KAFKA_SPOUT_ID);
+        builder.setBolt(WORD_COUNT_BOLT_ID, new WordCountBolt()).fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
+        builder.setBolt(HBASE_BOLT_ID, new Write2HbaseBolt()).fieldsGrouping(WORD_COUNT_BOLT_ID, new Fields("word"));
+        builder.setBolt(REPORT_BOLT_ID, new ReportBolt()).shuffleGrouping(HBASE_BOLT_ID);
+        builder.setBolt(KAFKA_BOLT_ID, new KafkaBolt<String, Long>()).shuffleGrouping(REPORT_BOLT_ID);
 
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
