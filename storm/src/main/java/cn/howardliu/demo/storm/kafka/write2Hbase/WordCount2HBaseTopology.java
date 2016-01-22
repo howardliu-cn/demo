@@ -31,18 +31,18 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class WordCount2HBaseTopology {
-    private static final String KAFKA_SPOUT_ID = "sentenceKafkaSpout";
-    private static final String SENTENCE_BOLT_ID = "sentenceBolt";
-    private static final String SPLIT_BOLT_ID = "sentenceSplitBolt";
-    private static final String WORD_COUNT_BOLT_ID = "sentenceWordCountBolt";
-    private static final String REPORT_BOLT_ID = "sentenceReportBolt";
-    private static final String KAFKA_BOLT_ID = "sentenceKafkabolt";
-    private static final String HBASE_BOLT_ID = "sentenceHBaseBolt";
+    private static final String KAFKA_SPOUT_ID = "sentence2HBaseKafkaSpout";
+    private static final String SENTENCE_BOLT_ID = "sentenceHBaseBolt";
+    private static final String SPLIT_BOLT_ID = "sentence2HBaseSplitBolt";
+    private static final String WORD_COUNT_BOLT_ID = "sentence2HBaseWordCountBolt";
+    private static final String REPORT_BOLT_ID = "sentence2HBaseReportBolt";
+    private static final String KAFKA_BOLT_ID = "sentence2HBaseKafkabolt";
+    private static final String HBASE_BOLT_ID = "sentence2HBaseBolt";
     private static final String CONSUME_TOPIC = "sentenceTopic";
     private static final String PRODUCT_TOPIC = "wordCountTopic";
     private static final String ZK_ROOT = "/topology/root";
-    private static final String ZK_ID = "wordCount";
-    private static final String DEFAULT_TOPOLOGY_NAME = "sentenceWordCountKafka";
+    private static final String ZK_ID = "wordCountHBase";
+    private static final String DEFAULT_TOPOLOGY_NAME = "sentenceHBaseWordCountKafka";
 
     public static void main(String[] args) throws Exception {
         // 配置Zookeeper地址
@@ -73,9 +73,9 @@ public class WordCount2HBaseTopology {
         map.put("serializer.class", "kafka.serializer.StringEncoder");// serializer.class为消息的序列化类
         config.put("kafka.broker.properties", map);// 配置KafkaBolt中的kafka.broker.properties
         config.put("topic", PRODUCT_TOPIC);// 配置KafkaBolt生成的topic
-        // TODO 配置Kerberos keytab与principle
-        config.put("storm.keytab.file", "$keytab");
-        config.put("storm.kerberos.principal", "$principle");
+//        // TODO 配置Kerberos keytab与principle
+//        config.put("storm.keytab.file", "$keytab");
+//        config.put("storm.kerberos.principal", "$principle");
 
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
