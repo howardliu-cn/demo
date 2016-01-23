@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.kafka.write2Hbase.simple;
+package cn.howardliu.demo.storm.hbase.simple;
 
 import backtype.storm.Config;
 import backtype.storm.StormSubmitter;
@@ -34,7 +34,7 @@ public class Write2HBaseTopology {
         builder.setBolt("hbaseBolt", hBaseBolt, 1).shuffleGrouping("reportBolt");
 
         Map<String, String> HBConfig = Maps.newHashMap();
-        HBConfig.put("hbase.rootdir","hdfs://10.6.2.56:9000/hbase");
+        // HBConfig.put("hbase.rootdir","hdfs://10.6.2.56:9000/hbase");
         Config config = new Config();
         config.put("hbConfig",HBConfig);
         config.setNumWorkers(1);

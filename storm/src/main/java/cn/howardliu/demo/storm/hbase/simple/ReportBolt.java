@@ -1,4 +1,4 @@
-package cn.howardliu.demo.storm.kafka.write2Hbase.simple;
+package cn.howardliu.demo.storm.hbase.simple;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;
