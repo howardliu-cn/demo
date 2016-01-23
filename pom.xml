@@ -95,6 +95,20 @@
             </resource>
         </resources>
     </build>
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <resources.active>local</resources.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>cluster</id>
+            <properties>
+                <resources.active>cluster</resources.active>
+            </properties>
+        </profile>
+    </profiles>
 
     <distributionManagement>
         <snapshotRepository>
