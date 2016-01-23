@@ -45,11 +45,14 @@ public class Write2HbaseBolt extends BaseBasicBolt {
         try {
             String word = input.getStringByField("word");
             Long count = input.getLongByField("count");
+            logger.info("got word {} and count {}", word, count);
             try (HTableInterface table = connection.getTable("WordCount")) {
+                logger.info("try to put data ' word {} and count {}' to HBase", word, count);
                 Put p = new Put("word".getBytes());
                 p.add("cf".getBytes(), "word".getBytes(), Bytes.toBytes(word));
                 p.add("cf".getBytes(), "count".getBytes(), Bytes.toBytes(count));
                 table.put(p);
+                logger.info("some row ok", word, count);
             }
             collector.emit(new Values(word, count));
         } catch (Exception e) {

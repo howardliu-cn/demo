@@ -16,11 +16,14 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 public class ReportBolt extends BaseBasicBolt {
+    private static final Logger logger = LoggerFactory.getLogger(ReportBolt.class);
+
     @Override
     public void execute(Tuple input, BasicOutputCollector collector) {
         String word = input.getStringByField("word");
         Long count = input.getLongByField("count");
         String reportMessage = "{'word': '" + word + "', 'count': '" + count + "'}";
+        logger.info("now to put message {} to kafka", reportMessage);
         collector.emit(new Values(reportMessage));
     }
 
