@@ -26,10 +26,12 @@ public class JsonFormatter implements Formatter {
         return json.toString();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public boolean isExpectJson() {
         return expectJson;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void setExpectJson(boolean expectJson) {
         this.expectJson = expectJson;
     }
