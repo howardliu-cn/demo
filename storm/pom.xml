@@ -57,6 +57,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-jdbc</artifactId>
+            <version>0.10.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.10</artifactId>
             <version>0.8.2.1</version>
@@ -106,6 +111,11 @@
             <groupId>org.igniterealtime.smack</groupId>
             <artifactId>smackx</artifactId>
             <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.31</version>
         </dependency>
     </dependencies>
     <build>
