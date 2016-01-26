@@ -18,18 +18,23 @@
         <!--</encoder>-->
     <!--</appender>-->
     <appender name="kafka" class="cn.howardliu.demo.storm.log2Kafka.KafkaAppender">
-        <topic>logback-topic</topic>
-        <zookeeperHost>10.6.2.108:2181</zookeeperHost>
+        <topic>log-analysis</topic>
+        <zookeeperHost>zk1:2181,zk2:2182,zk3:183</zookeeperHost>
         <formatter class="cn.howardliu.demo.storm.log2Kafka.JsonFormatter">
             <expectJson>true</expectJson>
         </formatter>
     </appender>
 
-    <logger name="cn.howardliu.demo.storm" additivity="false">
+    <logger name="cn.howardliu.demo.storm.trident" additivity="false">
         <level value="DEBUG"/>
         <appender-ref ref="stdout"/>
         <!--<appender-ref ref="filelog"/>-->
         <appender-ref ref="kafka"/>
+    </logger>
+
+    <logger name="cn.howardliu.demo.storm.alert" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="stdout"/>
     </logger>
 
     <root level="WARN">

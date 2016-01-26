@@ -19,9 +19,9 @@ public class JsonFormatter implements Formatter {
         json.put("logger", event.getLoggerName());
         json.put("timestamp", event.getTimeStamp());
         if (this.expectJson) {
-            json.put("message", event.getFormattedMessage());
+            json.put("message", "'" + event.getFormattedMessage() + "'");
         } else {
-            json.put("message", event.getLoggerName());
+            json.put("message", "'" + event.getLoggerName() + "'");
         }
         return json.toString();
     }
