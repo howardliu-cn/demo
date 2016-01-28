@@ -12,6 +12,8 @@ import cn.howardliu.demo.storm.kafka.MessageScheme;
 import storm.kafka.*;
 import storm.kafka.bolt.KafkaBolt;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,13 +32,13 @@ public class WordCountTopology {
     private static final String KAFKA_BOLT_ID = "sentenceKafkabolt";
     private static final String CONSUME_TOPIC = "sentenceTopic";
     private static final String PRODUCT_TOPIC = "wordCountTopic";
-    private static final String ZK_ROOT = "/topology/root";
+    private static final String ZK_ROOT = "/storm/topology/root";
     private static final String ZK_ID = "wordCount";
     private static final String DEFAULT_TOPOLOGY_NAME = "sentenceWordCountKafka";
 
     public static void main(String[] args) throws Exception {
         // 配置Zookeeper地址
-        BrokerHosts brokerHosts = new ZkHosts(BaseConfigConstants.ZK_SERVER);
+        BrokerHosts brokerHosts = new ZkHosts(BaseConfigConstants.ZK_SERVER, "/kafka/brokers");
         // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
         SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, CONSUME_TOPIC, ZK_ROOT, ZK_ID);
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
@@ -59,9 +61,9 @@ public class WordCountTopology {
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology(DEFAULT_TOPOLOGY_NAME, config, builder.createTopology());
-            Utils.sleep(100000);
-            cluster.killTopology(DEFAULT_TOPOLOGY_NAME);
-            cluster.shutdown();
+//            Utils.sleep(100000);
+//            cluster.killTopology(DEFAULT_TOPOLOGY_NAME);
+//            cluster.shutdown();
         } else {
             config.setNumWorkers(1);
             StormSubmitter.submitTopology(args[0], config, builder.createTopology());

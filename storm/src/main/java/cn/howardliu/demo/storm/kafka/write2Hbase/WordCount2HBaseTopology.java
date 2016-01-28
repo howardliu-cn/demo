@@ -14,7 +14,6 @@ import cn.howardliu.demo.storm.kafka.wordCount.SentenceBolt;
 import cn.howardliu.demo.storm.kafka.wordCount.SplitSentenceBolt;
 import cn.howardliu.demo.storm.kafka.wordCount.WordCountBolt;
 import com.google.common.collect.Maps;
-import org.apache.storm.hbase.bolt.HBaseBolt;
 import org.apache.storm.hbase.bolt.mapper.SimpleHBaseMapper;
 import storm.kafka.BrokerHosts;
 import storm.kafka.KafkaSpout;
@@ -41,13 +40,13 @@ public class WordCount2HBaseTopology {
     private static final String HBASE_BOLT_ID = "sentence2HBaseBolt";
     private static final String CONSUME_TOPIC = "sentenceTopic";
     private static final String PRODUCT_TOPIC = "wordCountTopic";
-    private static final String ZK_ROOT = "/topology/root";
+    private static final String ZK_ROOT = "/storm/topology/root";
     private static final String ZK_ID = "wordCount2HBase";
     private static final String DEFAULT_TOPOLOGY_NAME = "sentenceHBaseWordCountKafka";
 
     public static void main(String[] args) throws Exception {
         // 配置Zookeeper地址
-        BrokerHosts brokerHosts = new ZkHosts(BaseConfigConstants.ZK_SERVER);
+        BrokerHosts brokerHosts = new ZkHosts(BaseConfigConstants.ZK_SERVER, "/kafka/brokers");
         // 配置Kafka订阅的Topic，以及zookeeper中数据节点目录和名字
         SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, CONSUME_TOPIC, ZK_ROOT, ZK_ID);
         spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
@@ -60,7 +59,7 @@ public class WordCount2HBaseTopology {
         config.put("topic", PRODUCT_TOPIC);// 配置KafkaBolt生成的topic
 
         Map<String, String> hbConfig = Maps.newHashMap();
-        // hbConfig.put("hbase.rootdir", "hdfs://10.6.2.56:9000/hbase");
+        //hbConfig.put("hbase.rootdir", "hdfs://s55:9000/hbase");
         config.put("hbConfig", hbConfig);
 
         SimpleHBaseMapper mapper = new SimpleHBaseMapper()
@@ -76,8 +75,8 @@ public class WordCount2HBaseTopology {
         builder.setBolt(WORD_COUNT_BOLT_ID, new WordCountBolt()).fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
         //builder.setBolt(HBASE_BOLT_ID, new Write2HbaseBolt()).fieldsGrouping(WORD_COUNT_BOLT_ID, new Fields("word"));
         builder.setBolt(HBASE_BOLT_ID, hBaseBolt).shuffleGrouping(WORD_COUNT_BOLT_ID);
-        builder.setBolt(REPORT_BOLT_ID, new ReportBolt()).shuffleGrouping(WORD_COUNT_BOLT_ID);
-        builder.setBolt(KAFKA_BOLT_ID, new KafkaBolt<String, Long>()).shuffleGrouping(REPORT_BOLT_ID);
+        // builder.setBolt(REPORT_BOLT_ID, new ReportBolt()).shuffleGrouping(WORD_COUNT_BOLT_ID);
+        // builder.setBolt(KAFKA_BOLT_ID, new KafkaBolt<String, Long>()).shuffleGrouping(REPORT_BOLT_ID);
 
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();

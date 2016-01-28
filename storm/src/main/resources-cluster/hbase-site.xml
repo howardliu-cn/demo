@@ -2,7 +2,6 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
 /**
- * Copyright 2010 The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,45 +21,27 @@
  */
 -->
 <configuration>
-	<property>
-		<name>hbase.rootdir</name>
-		<value>hdfs://10.6.2.56:9000/hbase</value>
-		<description>The directory shared by Region Servers</description>
-	</property>
-	<property>
-		<name>hbase.cluster.distributed</name>
-		<value>true</value>
-		<description>The mode the clusterwill be in. Possible values are
-		false: standalone and pseudo-distributedsetups with managed Zookeeper
-		true: fully-distributed with unmanagedZookeeper Quorum (see hbase-env.sh)
-		</description>
-	</property>
-	<property>
-	        <name>hbase.zookeeper.property.clientPort</name>	        	         
-	        <value>2181</value>
-	      	<description>Property from ZooKeeper's config zoo.cfg.
-	                    The port at which the clients will connect.
-	        </description>
-	 </property>
-	 <property>
-		<name>hbase.master</name>
-		<value>hdfs://10.6.2.56:60000</value>
-	</property>
-	 <property>
-	        <name>hbase.zookeeper.quorum</name>
-	        <value>10.6.2.56,10.6.2.57,10.6.2.58</value>
-	        <description>Comma separated list of servers in the ZooKeeper Quorum.
-	                     For example, "host1.mydomain.com,host2.mydomain.com,host3.mydomain.com".
-	                     By default this is set to localhost for local and pseudo-distributed modes
-	                     of operation. For a fully-distributed setup, this should be set to a full
-	                     list of ZooKeeper quorum servers. If HBASE_MANAGES_ZK is set in hbase-env.sh
-	                     this is the list of servers which we will start/stop ZooKeeper on.
-	        </description>
-	 </property>
-	<property>
-		<name>hbase.tmp.dir</name>
-		<value>/data/hbase/tmp</value>
-		<description></description>
-	</property>
+    <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>hdfs://s55:9000/hbase</value>
+    </property>
+    <property>
+        <name>hbase.tmp.dir</name>
+        <value>/opt/hbase/data</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.quorum</name>
+        <value>s55</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.clientPort</name>
+        <value>12181</value>
+    </property>
 </configuration>
+
+
 

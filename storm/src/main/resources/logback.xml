@@ -8,38 +8,39 @@
             <pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>
         </encoder>
     </appender>
-    <!--<appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--<file>${log.home}/${log.name}.log</file>-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-            <!--<fileNamePattern>${log.home}/${log.name}.%d{yyyy-MM-dd}.log.zip</fileNamePattern>-->
-        <!--</rollingPolicy>-->
-        <!--<encoder>-->
-            <!--<pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>-->
-        <!--</encoder>-->
-    <!--</appender>-->
-    <appender name="kafka" class="cn.howardliu.demo.storm.log2Kafka.KafkaAppender">
-        <topic>log-analysis</topic>
-        <zookeeperHost>zk1:2181,zk2:2182,zk3:183</zookeeperHost>
-        <formatter class="cn.howardliu.demo.storm.log2Kafka.JsonFormatter">
-            <expectJson>true</expectJson>
-        </formatter>
+    <appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.home}/${log.name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.home}/${log.name}.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>
+        </encoder>
     </appender>
+    <!--<appender name="kafka" class="cn.howardliu.demo.storm.log2Kafka.KafkaAppender">-->
+        <!--<topic>log-analysis</topic>-->
+        <!--<zookeeperHost>zk1:2181,zk2:2182,zk3:183</zookeeperHost>-->
+        <!--<formatter class="cn.howardliu.demo.storm.log2Kafka.JsonFormatter">-->
+            <!--<expectJson>true</expectJson>-->
+        <!--</formatter>-->
+    <!--</appender>-->
 
     <logger name="cn.howardliu.demo.storm.trident" additivity="false">
         <level value="DEBUG"/>
         <appender-ref ref="stdout"/>
-        <!--<appender-ref ref="filelog"/>-->
-        <appender-ref ref="kafka"/>
+        <appender-ref ref="filelog"/>
+        <!--<appender-ref ref="kafka"/>-->
     </logger>
 
     <logger name="cn.howardliu.demo.storm.alert" additivity="false">
         <level value="DEBUG"/>
         <appender-ref ref="stdout"/>
+        <appender-ref ref="filelog"/>
     </logger>
 
     <root level="WARN">
         <appender-ref ref="stdout"/>
-        <!--<appender-ref ref="filelog"/>-->
-        <appender-ref ref="kafka"/>
+        <appender-ref ref="filelog"/>
+        <!--<appender-ref ref="kafka"/>-->
     </root>
 </configuration>

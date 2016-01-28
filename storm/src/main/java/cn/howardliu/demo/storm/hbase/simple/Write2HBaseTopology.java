@@ -1,14 +1,13 @@
 package cn.howardliu.demo.storm.hbase.simple;
 
 import backtype.storm.Config;
+import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
+import cn.howardliu.demo.storm.kafka.write2Hbase.HBaseBolt;
 import com.google.common.collect.Maps;
-import org.apache.storm.hbase.bolt.HBaseBolt;
 import org.apache.storm.hbase.bolt.mapper.SimpleHBaseMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -19,8 +18,6 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class Write2HBaseTopology {
-    private static final Logger logger = LoggerFactory.getLogger(Write2HBaseTopology.class);
-
     public static void main(String[] args) throws Exception {
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("sentenceSpout", new SentenceSpout(), 1);
@@ -31,13 +28,23 @@ public class Write2HBaseTopology {
                 .withColumnFields(new Fields("sentence"));
         HBaseBolt hBaseBolt = new HBaseBolt("t1", mapper).withConfigKey("hbConfig");
         builder.setBolt("reportBolt", new ReportBolt(), 1).shuffleGrouping("sentenceSpout");
-        builder.setBolt("hbaseBolt", hBaseBolt, 1).shuffleGrouping("reportBolt");
+        builder.setBolt("hbaseBolt", hBaseBolt, 1).fieldsGrouping("reportBolt", new Fields("sentence"));
 
         Map<String, String> HBConfig = Maps.newHashMap();
-        // HBConfig.put("hbase.rootdir","hdfs://10.6.2.56:9000/hbase");
+        HBConfig.put("hbase.rootdir", "hdfs://s55:9000/hbase");
+        HBConfig.put("hbase.tmp.dir", "/opt/hbase/data");
+        HBConfig.put("hbase.zookeeper.quorum", "s55");
+        HBConfig.put("hbase.zookeeper.property.clientPort", "12181");
+
         Config config = new Config();
-        config.put("hbConfig",HBConfig);
+        config.put("hbConfig", HBConfig);
         config.setNumWorkers(1);
-        StormSubmitter.submitTopology(args[0], config, builder.createTopology());
+
+        if (args.length == 0) {
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology("SimpleWrite2HBaseTopology", config, builder.createTopology());
+        } else {
+            StormSubmitter.submitTopology(args[0], config, builder.createTopology());
+        }
     }
 }

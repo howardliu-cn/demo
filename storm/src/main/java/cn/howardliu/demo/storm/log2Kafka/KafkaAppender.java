@@ -2,6 +2,7 @@ package cn.howardliu.demo.storm.log2Kafka;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
+import cn.howardliu.demo.storm.kafka.BaseConfigConstants;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
@@ -29,7 +30,7 @@ public class KafkaAppender extends AppenderBase<ILoggingEvent> {
         super.start();
         Properties props = new Properties();
         props.put("zk.connect", this.zookeeperHost);
-        props.put("metadata.broker.list", "10.6.2.108:9092");
+        props.put("metadata.broker.list", BaseConfigConstants.BROKER_SERVER);
         props.put("serializer.class", "kafka.serializer.StringEncoder");
         ProducerConfig config = new ProducerConfig(props);
         this.producer = new Producer<>(config);

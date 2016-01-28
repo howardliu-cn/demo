@@ -63,9 +63,9 @@ public class LogAnalysisTopology {
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("log-analysis", config, buildTopology());
-            Utils.sleep(20000);
-            cluster.killTopology("log-analysis");
-            cluster.shutdown();
+//            Utils.sleep(20000);
+//            cluster.killTopology("log-analysis");
+//            cluster.shutdown();
         } else {
             StormSubmitter.submitTopology(args[0], config, buildTopology());
         }

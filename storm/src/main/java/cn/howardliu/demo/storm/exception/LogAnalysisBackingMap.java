@@ -37,7 +37,6 @@ public class LogAnalysisBackingMap implements IBackingMap<OpaqueValue> {
 
     @Override
     public List<OpaqueValue> multiGet(List<List<Object>> keys) {
-//        List<List<Column>> rows = jdbcClient.select("", columns);
         return new ArrayList<>();
     }
 

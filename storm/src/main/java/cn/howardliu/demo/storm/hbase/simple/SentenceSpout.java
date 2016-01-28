@@ -42,6 +42,18 @@ public class SentenceSpout extends BaseRichSpout {
     }
 
     @Override
+    public void ack(Object msgId) {
+        logger.error("got ack message: msgId = {}", msgId, new RuntimeException());
+        super.ack(msgId);
+    }
+
+    @Override
+    public void fail(Object msgId) {
+        logger.error("got fail message: msgId = {}", msgId, new RuntimeException());
+        super.fail(msgId);
+    }
+
+    @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("sentence", "rk1", "f1"));
     }

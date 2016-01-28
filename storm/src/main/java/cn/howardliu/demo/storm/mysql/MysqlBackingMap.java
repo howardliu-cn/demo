@@ -172,11 +172,14 @@ public class MysqlBackingMap<T> implements IBackingMap<T> {
                 }
             }
             final ResultSet rs = ps.executeQuery();
-            final Function<String, Object> rsReader = column -> {
-                try {
-                    return rs.getObject(column);
-                } catch (final SQLException e) {
-                    return null;
+            final Function<String, Object> rsReader = new Function<String, Object>() {
+                @Override
+                public Object apply(final String column) {
+                    try {
+                        return rs.getObject(column);
+                    } catch (final SQLException sqlex) {
+                        return null;
+                    }
                 }
             };
             final List<String> keyColumns = Arrays.asList(config.getKeyColumns());
@@ -206,13 +209,13 @@ public class MysqlBackingMap<T> implements IBackingMap<T> {
     }
 
     private String buildKeyQuery(int n) {
-        String join = Joiner.on(" AND ").join(
-                Arrays.asList(config.getKeyColumns())
-                        .stream()
-                        .map(field -> field + " = ? ")
-                        .collect(Collectors.toList())
-        );
-        String single = "(" + join + ")";
+        final String single = "(" + Joiner.on(" AND ")
+                .join(Lists.transform(Arrays.asList(config.getKeyColumns()), new Function<String, String>() {
+                    @Override
+                    public String apply(final String field) {
+                        return field + " = ?";
+                    }
+                })) + ")";
         return Joiner.on(" OR ").join(repeat(single, n));
     }
 
@@ -223,12 +226,12 @@ public class MysqlBackingMap<T> implements IBackingMap<T> {
             cols.add("txid");
         }
         if (StateType.OPAQUE.equals(config.getType())) {
-            cols.addAll(
-                    Arrays.asList(config.getValueColumns())
-                            .stream()
-                            .map(field -> "prev_" + field)
-                            .collect(Collectors.toList())
-            );// the prev_* columns
+            cols.addAll(Lists.transform(Arrays.asList(config.getValueColumns()), new Function<String, String>() {
+                @Override
+                public String apply(final String field) {
+                    return "prev_" + field;
+                }
+            })); // the prev_* columns
         }
         return cols;
     }

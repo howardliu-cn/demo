@@ -32,7 +32,9 @@ public class SplitSentenceBolt extends BaseRichBolt {
     public void execute(Tuple tuple) {
         String sentence = tuple.getStringByField("sentence");
         String[] words = sentence.split(" ");
-        Arrays.asList(words).forEach(word -> this.collector.emit(tuple, new Values(word)));
+        for (String word : words) {
+            this.collector.emit(tuple, new Values(word));
+        }
         collector.ack(tuple);
     }
 

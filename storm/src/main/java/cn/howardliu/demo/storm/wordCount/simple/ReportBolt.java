@@ -22,7 +22,7 @@ public class ReportBolt extends BaseRichBolt {
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
-        counts = Collections.synchronizedMap(new HashMap<>());
+        counts = new HashMap<>();
     }
 
     @Override

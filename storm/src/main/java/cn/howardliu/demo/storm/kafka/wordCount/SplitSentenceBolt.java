@@ -25,6 +25,8 @@ public class SplitSentenceBolt extends BaseBasicBolt {
     public void execute(Tuple input, BasicOutputCollector collector) {
         String sentence = input.getStringByField("msg");
         String[] words = sentence.split(" ");
-        Arrays.asList(words).forEach(word -> collector.emit(new Values(word)));
+        for (String word : words) {
+            collector.emit(new Values(word));
+        }
     }
 }
