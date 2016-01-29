@@ -32,7 +32,7 @@ import storm.trident.state.StateType;
 public class LogAnalysisTopology {
     public static StormTopology buildTopology() {
         TridentTopology topology = new TridentTopology();
-        ZkHosts zkHosts = new ZkHosts("zk1:2181,zk2:2182,zk3:2183");
+        ZkHosts zkHosts = new ZkHosts("10.6.2.56:22181,10.6.2.57:22181,10.6.2.58:22181", "/kafka/brokers");
         TridentKafkaConfig spoutConf = new TridentKafkaConfig(zkHosts, "log-analysis");
         spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
         // spoutConf.startOffsetTime = kafka.api.OffsetRequest.LatestTime();
