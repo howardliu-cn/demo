@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/websocket
+                           http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+    <bean id="contentNegotiationManager"
+          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="defaultContentType" value="text/html"/>
+        <property name="favorParameter" value="true"/>
+        <property name="favorPathExtension" value="true"/>
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json"/>
+                <entry key="html" value="text/html"/>
+                <entry key="xml" value="application/xml"/>
+                <entry key="gif" value="image/gif"/>
+                <entry key="jpg" value="image/jpeg"/>
+                <entry key="jpeg" value="image/jpeg"/>
+                <entry key="png" value="image/png"/>
+                <entry key="ico" value="image/bmp"/>
+                <entry key="js" value="text/javascript"/>
+            </map>
+        </property>
+        <property name="parameterName" value="format"/>
+    </bean>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+            </list>
+        </property>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+                    <property name="viewClass"
+                              value="org.springframework.web.servlet.view.JstlView"/>
+                    <property name="prefix" value="/WEB-INF/jsp/"/>
+                    <property name="suffix" value=".jsp"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--websocket配置-->
+    <bean id="telWebSocketHandler" class="cn.howardliu.demo.websocket.xmlless.TelWebSocketHandler"/>
+     
+    <websocket:handlers allowed-origins="*">
+        <websocket:mapping path="/webSocketStatus" handler="telWebSocketHandler"/>
+        <websocket:handshake-interceptors>
+            <bean class="cn.howardliu.demo.websocket.xmlless.TelWebSocketHandshakeInterceptor"/>
+        </websocket:handshake-interceptors>
+        <websocket:sockjs/>
+    </websocket:handlers>
+     
+    <bean class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
+        <property name="maxTextMessageBufferSize" value="8192"/>
+        <property name="maxBinaryMessageBufferSize" value="8192"/>
+        <property name="maxSessionIdleTimeout" value="900000"/>
+        <property name="asyncSendTimeout" value="5000"/>
+    </bean>
+
+    <mvc:annotation-driven/>
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!--<context:component-scan base-package="cn.howardliu.demo.websocket.xmlless.controller"/>-->
+</beans>

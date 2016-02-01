@@ -21,6 +21,7 @@
         <module>miner</module>
         <module>mongodb-demo</module>
         <module>storm</module>
+        <module>websocket</module>
     </modules>
     <dependencies>
         <dependency>
