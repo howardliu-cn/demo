@@ -1,4 +1,4 @@
-package cn.howardliu.demo.websocket.xml;
+package cn.howardliu.demo.websocket.xml.echo.websocket;
 
 /**
  * <br/>create at 16-2-2

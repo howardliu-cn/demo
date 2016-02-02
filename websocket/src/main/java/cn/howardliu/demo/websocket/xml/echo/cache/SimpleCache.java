@@ -1,4 +1,4 @@
-package cn.howardliu.demo.websocket.xml.cache;
+package cn.howardliu.demo.websocket.xml.echo.cache;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;

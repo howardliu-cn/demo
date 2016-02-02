@@ -1,4 +1,4 @@
-package cn.howardliu.demo.websocket.xml;
+package cn.howardliu.demo.websocket.xml.echo.websocket;
 
 import org.springframework.stereotype.Component;
 

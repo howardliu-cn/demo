@@ -1,6 +1,6 @@
-package cn.howardliu.demo.websocket.xml;
+package cn.howardliu.demo.websocket.xml.echo.websocket;
 
-import cn.howardliu.demo.websocket.xml.cache.SimpleCache;
+import cn.howardliu.demo.websocket.xml.echo.cache.SimpleCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
