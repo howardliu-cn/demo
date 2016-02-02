@@ -1,4 +1,4 @@
-package cn.howardliu.demo.websocket.xmlless;
+package cn.howardliu.demo.websocket.xml;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TelSocketSessionUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelSocketSessionUtils.class);
 
-    private static Map<String, WebSocketSession> clients = new ConcurrentHashMap<>();
+    private static final Map<String, WebSocketSession> clients = new ConcurrentHashMap<>();
 
     /**
      * 保存一个连接

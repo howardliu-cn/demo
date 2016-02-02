@@ -57,18 +57,12 @@
         </property>
     </bean>
 
-
-    <!--websocket配置-->
-    <bean id="telWebSocketHandler" class="cn.howardliu.demo.websocket.xmlless.TelWebSocketHandler"/>
-     
-    <websocket:handlers allowed-origins="*">
-        <websocket:mapping path="/webSocketStatus" handler="telWebSocketHandler"/>
-        <websocket:handshake-interceptors>
-            <bean class="cn.howardliu.demo.websocket.xmlless.TelWebSocketHandshakeInterceptor"/>
-        </websocket:handshake-interceptors>
+    <websocket:handlers>
+        <websocket:mapping path="/echo" handler="echoWebSocketHandler"/>
+        <websocket:mapping path="/sockjs/echo" handler="echoWebSocketHandler"/>
         <websocket:sockjs/>
     </websocket:handlers>
-     
+
     <bean class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
         <property name="maxTextMessageBufferSize" value="8192"/>
         <property name="maxBinaryMessageBufferSize" value="8192"/>
@@ -77,8 +71,6 @@
     </bean>
 
     <mvc:annotation-driven/>
-
     <aop:aspectj-autoproxy proxy-target-class="true"/>
-
-    <!--<context:component-scan base-package="cn.howardliu.demo.websocket.xmlless.controller"/>-->
+    <context:component-scan base-package="cn.howardliu.demo.websocket.xml.controller"/>
 </beans>

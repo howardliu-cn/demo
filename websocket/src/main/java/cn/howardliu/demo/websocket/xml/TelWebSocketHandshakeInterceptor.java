@@ -1,4 +1,4 @@
-package cn.howardliu.demo.websocket.xmlless;
+package cn.howardliu.demo.websocket.xml;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -15,7 +15,6 @@ import java.util.Map;
  * 有两种方式
  * 一种是实现接口HandshakeInterceptor，实现beforeHandshake和afterHandshake函数
  * 一种是继承HttpSessionHandshakeInterceptor，重载beforeHandshake和afterHandshake函数
- * 我这里是参照spring官方文档中的继承HttpSessionHandshakeInterceptor的方式
  */
 public class TelWebSocketHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     /**
@@ -32,12 +31,6 @@ public class TelWebSocketHandshakeInterceptor extends HttpSessionHandshakeInterc
         }
         super.beforeHandshake(serverHttpRequest, serverHttpResponse, wsHandler, attributes);
         return true;
-    }
-
-    @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
-            Exception ex) {
-        super.afterHandshake(request, response, wsHandler, ex);
     }
 
     private HttpSession getSession(ServerHttpRequest request) {

@@ -1,4 +1,4 @@
-package cn.howardliu.demo.websocket.xmlless;
+package cn.howardliu.demo.websocket.xml;
 
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
@@ -11,19 +11,13 @@ import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
- *  * 功能说明：WebSocket处理器
- *  * 可以继承 {@link TextWebSocketHandler}/{@link BinaryWebSocketHandler}，
- *  * 或者简单的实现{@link WebSocketHandler}接口
- *  
+ * WebSocket处理器，可以继承 {@link TextWebSocketHandler}/{@link BinaryWebSocketHandler}，或者简单的实现{@link WebSocketHandler}接口
  */
 public class TelWebSocketHandler extends TextWebSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelWebSocketHandler.class);
 
     /**
-     *  * 建立连接
-     *  * @param session
-     *  * @throws Exception
-     *  
+     * 建立连接
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -33,25 +27,17 @@ public class TelWebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     *  * 收到客户端消息
-     *  * @param session
-     *  * @param message
-     *  * @throws Exception
-     *  
+     * 收到客户端消息
      */
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String inquiryId = MapUtils.getString(session.getAttributes(), "inquiryId");
         int empNo = MapUtils.getInteger(session.getAttributes(), "empNo");
-        TelSocketSessionUtils.sendMessage(inquiryId, empNo, "【来自服务器的复读机】：" + message.getPayload().toString());
+        TelSocketSessionUtils.sendMessage(inquiryId, empNo, "【来自服务器的回应】：" + message.getPayload());
     }
 
     /**
-     *  * 出现异常
-     *  * @param session
-     *  * @param exception
-     *  * @throws Exception
-     *  
+     * 出现异常
      */
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
@@ -64,11 +50,7 @@ public class TelWebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     *  * 连接关闭
-     *  * @param session
-     *  * @param closeStatus
-     *  * @throws Exception
-     *  
+     * 连接关闭
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
@@ -78,9 +60,7 @@ public class TelWebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     *  * 是否分段发送消息
-     *  * @return
-     *  
+     * 是否分段发送消息
      */
     @Override
     public boolean supportsPartialMessages() {

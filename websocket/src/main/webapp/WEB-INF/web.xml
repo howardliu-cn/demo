@@ -5,9 +5,6 @@
                              http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
     <display-name>websocket-service</display-name>
-    <absolute-ordering>
-        <name>spring_web</name>
-    </absolute-ordering>
 
     <context-param>
         <description>Spring主配置文件</description>
@@ -46,20 +43,17 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath:spring-mvc.xml</param-value>
         </init-param>
+        <init-param>
+            <description>需要支持OPTIONS</description>
+            <param-name>dispatchOptionsRequest</param-name>
+            <param-value>true</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
     <servlet-mapping>
         <servlet-name>spring-mvc</servlet-name>
-        <url-pattern>*.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>spring-mvc</servlet-name>
-        <url-pattern>*.json</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>spring-mvc</servlet-name>
-        <url-pattern>*.jsonp</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
     <filter>
         <description>浏览器不支持put,delete等method,由该filter将/blog?_method=delete转换为标准的http delete方法</description>
