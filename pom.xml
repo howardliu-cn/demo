@@ -22,6 +22,7 @@
         <module>mongodb-demo</module>
         <module>storm</module>
         <module>websocket</module>
+        <module>es</module>
     </modules>
     <dependencies>
         <dependency>
