@@ -23,6 +23,7 @@
         <module>storm</module>
         <module>websocket</module>
         <module>es</module>
+        <module>hbase</module>
     </modules>
     <dependencies>
         <dependency>
