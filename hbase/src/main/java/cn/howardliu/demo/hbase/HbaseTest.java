@@ -27,14 +27,14 @@ public class HbaseTest {
 
         Scan scan = new Scan();
         scan.setCaching(100);
-        scan.setStartRow("100410400000000000000000000000".getBytes());
-        scan.setStopRow("200410499999999999999999999999".getBytes());
+        scan.setStartRow(" ".getBytes());
+        scan.setStopRow("209999999999999999999999999999".getBytes());
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
-        filterList.addFilter(new RowFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("^\\d004104.*")));
+        filterList.addFilter(new RowFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("^\\d004002\\d+")));
         filterList.addFilter(new SingleColumnValueFilter("message".getBytes(), "create_date".getBytes(),
                 CompareFilter.CompareOp.GREATER_OR_EQUAL, "2015-02-23 12:10:30".getBytes()));
         filterList.addFilter(new SingleColumnValueFilter("message".getBytes(), "create_date".getBytes(),
-                CompareFilter.CompareOp.LESS_OR_EQUAL, "2016-02-23 12:10:30".getBytes()));
+                CompareFilter.CompareOp.LESS_OR_EQUAL, "2017-03-23 12:10:30".getBytes()));
         filterList.addFilter(new SingleColumnValueFilter("message".getBytes(), "process_status".getBytes(),
                 CompareFilter.CompareOp.EQUAL, "0".getBytes()));
         scan.setFilter(filterList);

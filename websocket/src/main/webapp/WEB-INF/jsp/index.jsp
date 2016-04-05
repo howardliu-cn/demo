@@ -34,7 +34,7 @@
         }
     </style>
 
-    <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+    <script src="//cdn.bootcss.com/sockjs-client/1.0.3/sockjs.js"></script>
 
     <script type="text/javascript">
         var ws = null;
@@ -45,7 +45,6 @@
             document.getElementById('connect').disabled = connected;
             document.getElementById('disconnect').disabled = !connected;
             document.getElementById('echo').disabled = !connected;
-            document.getElementById('sendNewMsg').disabled = !connected;
         }
 
         function connect() {
@@ -55,7 +54,7 @@
             }
 
             ws = (url.indexOf('sockjs') != -1) ?
-                    new SockJS(url, undefined, {protocols_whitelist: transports}) : new WebSocket(url);
+                    new SockJS(url, undefined, {transports: transports}) : new WebSocket(url);
 
             ws.onopen = function (event) {
                 setConnected(true);

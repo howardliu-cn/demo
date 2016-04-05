@@ -4,6 +4,7 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import java.net.InetAddress;
@@ -20,8 +21,9 @@ import java.util.Map;
  */
 public class TransportClientMain {
     public static void main(String[] args) throws UnknownHostException {
-        Client client = TransportClient.builder().build()
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.6.2.108"), 9300));
+        Settings settings = Settings.settingsBuilder().put("cluster.name", "development").build();
+        Client client = TransportClient.builder().settings(settings).build()
+                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.6.2.151"), 9300));
 
         Map<String, Object> json = new HashMap<>();
         json.put("user", "kimchy");
@@ -29,7 +31,7 @@ public class TransportClientMain {
         json.put("message", "trying out Elasticsearch");
 
         IndexResponse response = client
-                .prepareIndex("twitter", "tweet", "1")
+                .prepareIndex("demo-twitter", "tweet", "1")
                 .setSource(json)
                 .get();
 
@@ -43,7 +45,7 @@ public class TransportClientMain {
                 "isCreated() is true if the document is a new one, false if it has bean updated, the value is "
                         + response.isCreated());
 
-        GetResponse getResponse = client.prepareGet("twitter", "tweet", "1").get();
+        GetResponse getResponse = client.prepareGet("demo-twitter", "tweet", "1").get();
         System.out.println("index name is " + getResponse.getIndex());
         System.out.println("type name is " + getResponse.getType());
         System.out.println("document id is " + getResponse.getId());
