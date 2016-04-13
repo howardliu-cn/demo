@@ -24,6 +24,7 @@
         <module>websocket</module>
         <module>es</module>
         <module>hbase</module>
+        <module>etcd-demo</module>
     </modules>
     <dependencies>
         <dependency>
