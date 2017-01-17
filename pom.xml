@@ -25,6 +25,8 @@
         <module>es</module>
         <module>hbase</module>
         <module>etcd-demo</module>
+        <module>spark-demo</module>
+        <module>ws-demo</module>
     </modules>
     <dependencies>
         <dependency>
