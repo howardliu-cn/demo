@@ -22,11 +22,6 @@
                               socket-timeout="${mongo.socketTimeout}"/>
     </mongo:mongo-client>
 
-    <bean id="userCredentials" class="org.springframework.data.authentication.UserCredentials">
-        <constructor-arg name="username" value="${mongo.username}"/>
-        <constructor-arg name="password" value="${mongo.password}"/>
-    </bean>
-
     <mongo:db-factory mongo-ref="mongoClient" dbname="${mongo.dbName}"/>
 
     <mongo:mapping-converter id="mongoConverter" base-package="cn.howardliu.mongodb.spring"
