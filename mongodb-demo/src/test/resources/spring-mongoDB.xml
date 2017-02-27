@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/data/mongo
+                           http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+    <context:property-placeholder file-encoding="UTF-8" location="classpath*:mongodb.properties"
+                                  ignore-unresolvable="true"/>
+
+    <mongo:mongo-client id="mongoClient" replica-set="${mongo.replicaSet}"
+                        credentials="${mongo.username}:${mongo.password}@${mongo.dbName}">
+        <mongo:client-options connections-per-host="${mongo.connectionsPerHost}"
+                              threads-allowed-to-block-for-connection-multiplier="${mongo.threadsAllowedToBlockForConnectionMultiplier}"
+                              connect-timeout="${mongo.connectTimeout}"
+                              max-wait-time="${mongo.maxWaitTime}"
+                              socket-keep-alive="${mongo.socketKeepAlive}"
+                              socket-timeout="${mongo.socketTimeout}"/>
+    </mongo:mongo-client>
+
+    <bean id="userCredentials" class="org.springframework.data.authentication.UserCredentials">
+        <constructor-arg name="username" value="${mongo.username}"/>
+        <constructor-arg name="password" value="${mongo.password}"/>
+    </bean>
+
+    <mongo:db-factory mongo-ref="mongoClient" dbname="${mongo.dbName}"/>
+
+    <mongo:mapping-converter id="mongoConverter" base-package="cn.howardliu.mongodb.spring"
+                             type-mapper-ref="defaultMongoTypeMapper">
+        <mongo:custom-converters base-package="cn.howardliu.mongodb.spring"/>
+    </mongo:mapping-converter>
+
+    <bean id="defaultMongoTypeMapper" class="org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper">
+        <constructor-arg name="typeKey">
+            <null/>
+        </constructor-arg>
+    </bean>
+
+    <mongo:template db-factory-ref="mongoDbFactory" converter-ref="mongoConverter" write-concern="SAFE"/>
+
+    <mongo:repositories base-package="cn.howardliu.mongodb.spring"/>
+</beans>
