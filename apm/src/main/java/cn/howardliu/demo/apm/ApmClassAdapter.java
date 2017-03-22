@@ -1,9 +1,9 @@
 package cn.howardliu.demo.apm;
 
-import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * <br>created at 17-3-22
@@ -11,12 +11,12 @@ import org.objectweb.asm.MethodVisitor;
  * @author liuxh
  * @since 1.0.0
  */
-public class ApmClassAdapter extends ClassAdapter {
+public class ApmClassAdapter extends ClassVisitor {
     private String className;
     private String fileName;
 
     public ApmClassAdapter(ClassVisitor classVisitor, String className) {
-        super(classVisitor);
+        super(Opcodes.ASM5, classVisitor);
         this.className = className;
         ApmCounter.classCount.getAndIncrement();
     }

@@ -1,6 +1,9 @@
 package cn.howardliu.demo.apm;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 
@@ -10,11 +13,11 @@ import static org.objectweb.asm.Opcodes.INVOKESTATIC;
  * @author liuxh
  * @since 1.0.0
  */
-public class ApmMethodAdapter extends MethodAdapter {
+public class ApmMethodAdapter extends MethodVisitor {
     private int methodId = 0;
 
     public ApmMethodAdapter(MethodVisitor visitor, String fileName, String className, String methodName) {
-        super(visitor);
+        super(Opcodes.ASM5, visitor);
         methodId = MethodCache.request();
         MethodCache.updateMethodName(methodId, fileName, className, methodName);
         ApmCounter.methodCount.getAndIncrement();
@@ -23,7 +26,7 @@ public class ApmMethodAdapter extends MethodAdapter {
     @Override
     public void visitCode() {
         this.visitLdcInsn(methodId);
-        this.visitMethodInsn(INVOKESTATIC, Type.getInternalName(ApmCounter.class), "start", "(I)V");
+        this.visitMethodInsn(INVOKESTATIC, Type.getInternalName(ApmCounter.class), "start", "(I)V", false);
         super.visitCode();
     }
 
@@ -44,7 +47,7 @@ public class ApmMethodAdapter extends MethodAdapter {
             case Opcodes.RETURN:
             case Opcodes.ATHROW:
                 this.visitLdcInsn(methodId);
-                this.visitMethodInsn(INVOKESTATIC, Type.getInternalName(ApmCounter.class), "end", "(I)V");
+                this.visitMethodInsn(INVOKESTATIC, Type.getInternalName(ApmCounter.class), "end", "(I)V", false);
             default:
                 break;
         }
