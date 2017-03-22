@@ -27,6 +27,7 @@
         <module>etcd-demo</module>
         <module>spark-demo</module>
         <module>ws-demo</module>
+        <module>apm</module>
     </modules>
     <dependencies>
         <dependency>
