@@ -17,6 +17,10 @@ public class ApmClassFileTransformer implements ClassFileTransformer {
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
             ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
+        if (className.contains("HttpServletBean") || className.contains("FrameworkServlet")
+                || className.contains("DispatcherServlet")) {
+            System.err.println("className: " + className);
+        }
         if (loader == null
                 || ApmFilter.isNotNeedInjectClassLoader(loader.getClass().getName())
                 || ApmFilter.isNotNeedInject(className)) {

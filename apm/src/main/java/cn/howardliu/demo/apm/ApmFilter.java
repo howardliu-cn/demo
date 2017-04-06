@@ -18,7 +18,6 @@ public class ApmFilter {
         excludePackage.add("sun/");
         excludePackage.add("com/sun/");
         excludePackage.add("org/apache/");
-        excludePackage.add("org/springframework/");
         excludePackage.add("ch/qos/logback");
         excludePackage.add("org/hibernate");
         excludePackage.add("org/slf4j");

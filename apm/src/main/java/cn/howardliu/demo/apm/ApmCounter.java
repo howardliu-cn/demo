@@ -24,8 +24,8 @@ public class ApmCounter {
         if (timeCounter.containsKey(methodId)) {
             MethodInfo methodInfo = MethodCache.get(methodId);
             long usedTime = System.nanoTime() - timeCounter.get(methodId);
-            System.out.println("method " + methodInfo.getClassName() + "#" + methodInfo.getMethodName()
-                    + " used " + usedTime + " ns");
+//            System.out.println("method " + methodInfo.getClassName() + "#" + methodInfo.getMethodName()
+//                    + " used " + usedTime + " ns");
         }
     }
 }

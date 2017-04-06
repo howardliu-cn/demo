@@ -26,12 +26,11 @@ public class MethodCache {
         cacheMethods.get(id).setLineNum(lineNum);
     }
 
-
     public synchronized static void updateMethodName(int id, String fileName, String className, String methodName) {
         MethodInfo methodInfo = cacheMethods.get(id);
         methodInfo.setFileName(fileName);
         methodInfo.setClassName(className);
         methodInfo.setMethodName(methodName);
-        System.out.println("");
+//        System.out.println("");
     }
 }
