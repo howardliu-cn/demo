@@ -28,6 +28,7 @@
         <module>spark-demo</module>
         <module>ws-demo</module>
         <module>apm</module>
+        <module>javassist-demo</module>
     </modules>
     <dependencies>
         <dependency>
