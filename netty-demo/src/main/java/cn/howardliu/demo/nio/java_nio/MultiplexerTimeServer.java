@@ -29,7 +29,7 @@ public class MultiplexerTimeServer implements Runnable {
             serverChannel.configureBlocking(false);
             serverChannel.socket().bind(new InetSocketAddress(port), 1024);
             serverChannel.register(selector, SelectionKey.OP_ACCEPT);
-            System.out.println("The time server is start in port " + port);
+            System.out.println(Thread.currentThread().getName() + ", The time server is start in port " + port);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -102,7 +102,7 @@ public class MultiplexerTimeServer implements Runnable {
                 byte[] bytes = new byte[readBuffer.remaining()];
                 readBuffer.get(bytes);
                 String body = new String(bytes, "UTF-8");
-                System.out.println("The time server receive order: " + body);
+                System.out.println(Thread.currentThread().getName() + ", The time server receive order: " + body);
                 String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date().toString() : "BAD ORDER";
                 doWrite(sc, currentTime);
             } else if (readBytes < 0) {
