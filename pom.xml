@@ -29,6 +29,7 @@
         <module>ws-demo</module>
         <module>apm</module>
         <module>javassist-demo</module>
+        <module>netty-demo</module>
     </modules>
     <dependencies>
         <dependency>
