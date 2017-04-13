@@ -30,6 +30,7 @@
         <module>apm</module>
         <module>javassist-demo</module>
         <module>netty-demo</module>
+        <module>thread-demo</module>
     </modules>
     <dependencies>
         <dependency>
