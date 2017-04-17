@@ -14,6 +14,7 @@
     <properties>
         <dependency.netty-all.version>4.1.6.Final</dependency.netty-all.version>
         <dependency.protobuf-java.version>3.1.0</dependency.protobuf-java.version>
+        <dependency.fastjson.version>1.2.22</dependency.fastjson.version>
     </properties>
 
     <dependencies>
@@ -26,6 +27,11 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <version>${dependency.protobuf-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${dependency.fastjson.version}</version>
         </dependency>
     </dependencies>
 
