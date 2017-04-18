@@ -1,9 +1,8 @@
 package cn.howardliu.demo.nio.netty_nio.protocol.privateProtocol.factory;
 
 import org.junit.Test;
-import org.springframework.util.Assert;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * <br>created at 17-4-18
@@ -16,11 +15,11 @@ public class MarshallingCodeCFactoryTest {
 
     @Test
     public void testDecoder() throws Exception {
-        Assert.notNull(MarshallingCodeCFactory.decoder());
+        assertNotNull(MarshallingCodeCFactory.decoder());
     }
 
     @Test
     public void testEncoder() throws Exception {
-        Assert.notNull(MarshallingCodeCFactory.encoder());
+        assertNotNull(MarshallingCodeCFactory.encoder());
     }
 }
