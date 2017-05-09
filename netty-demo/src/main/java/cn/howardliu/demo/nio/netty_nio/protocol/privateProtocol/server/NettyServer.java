@@ -26,8 +26,8 @@ public class NettyServer {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
+            new ServerBootstrap()
+                    .group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 100)
                     .handler(new LoggingHandler(LogLevel.INFO))
@@ -41,8 +41,8 @@ public class NettyServer {
                                     .addLast(new LoginAuthRespHandler())
                                     .addLast("HeartbeatHandler", new HeartbeatRespHandler());
                         }
-                    });
-            b.bind(NettyConstant.REMOTE_IP, NettyConstant.PORT).sync()
+                    })
+                    .bind(NettyConstant.REMOTE_IP, NettyConstant.PORT).sync()
                     .channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();

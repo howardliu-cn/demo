@@ -9,5 +9,5 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jdk1.8Time-demo</artifactId>
+    <artifactId>jdk1.8-demo</artifactId>
 </project>
