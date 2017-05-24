@@ -29,8 +29,11 @@
         <module>ws-demo</module>
         <module>apm</module>
         <module>javassist-demo</module>
-        <module>netty-demo</module>
         <module>thread-demo</module>
+        <module>netty-demo</module>
+        <module>guava-demo</module>
+        <module>jdk1.8-demo</module>
+        <module>embedded-tomcat-demo</module>
     </modules>
     <dependencies>
         <dependency>
