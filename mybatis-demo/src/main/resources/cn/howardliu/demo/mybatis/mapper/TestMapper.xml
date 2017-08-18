@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.howardliu.demo.mybatis.mapper.TestMapper">
+    <insert id="insert">
+        INSERT INTO test_table (sid, name) VALUES (#{sid}, #{name})
+    </insert>
+    <delete id="delete">
+        DELETE FROM test_table
+        WHERE sid = #{sid}
+    </delete>
+    <select id="list" resultType="cn.howardliu.demo.mybatis.pojo.Test" useCache="false">
+        SELECT *
+        FROM test_table
+    </select>
+    <select id="get" resultType="cn.howardliu.demo.mybatis.pojo.Test">
+        SELECT *
+        FROM test_table
+        WHERE sid = #{sid}
+    </select>
+</mapper>
