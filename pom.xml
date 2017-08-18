@@ -9,31 +9,33 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>annotation</module>
-        <module>redis</module>
+        <!--<module>annotation</module>-->
+        <!--<module>redis</module>-->
         <module>curator</module>
-        <module>enum</module>
-        <module>velocityDemo</module>
-        <module>signature</module>
-        <module>luceneDemo</module>
-        <module>http-client-simple</module>
-        <module>solr-exercise</module>
-        <module>miner</module>
-        <module>mongodb-demo</module>
-        <module>storm</module>
-        <module>websocket</module>
-        <module>es</module>
-        <module>hbase</module>
-        <module>etcd-demo</module>
-        <module>spark-demo</module>
-        <module>ws-demo</module>
-        <module>apm</module>
-        <module>javassist-demo</module>
-        <module>thread-demo</module>
-        <module>netty-demo</module>
-        <module>guava-demo</module>
+        <!--<module>enum</module>-->
+        <!--<module>velocityDemo</module>-->
+        <!--<module>signature</module>-->
+        <!--<module>luceneDemo</module>-->
+        <!--<module>http-client-simple</module>-->
+        <!--<module>solr-exercise</module>-->
+        <!--<module>miner</module>-->
+        <!--<module>mongodb-demo</module>-->
+        <!--<module>storm</module>-->
+        <!--<module>websocket</module>-->
+        <!--<module>es</module>-->
+        <!--<module>hbase</module>-->
+        <!--<module>etcd-demo</module>-->
+        <!--<module>spark-demo</module>-->
+        <!--<module>ws-demo</module>-->
+        <!--<module>apm</module>-->
+        <!--<module>javassist-demo</module>-->
+        <!--<module>thread-demo</module>-->
+        <!--<module>netty-demo</module>-->
+        <!--<module>guava-demo</module>-->
         <module>jdk1.8-demo</module>
         <module>embedded-tomcat-demo</module>
+        <module>rabbitmq-demo</module>
+        <module>mybatis-demo</module>
     </modules>
     <dependencies>
         <dependency>
