@@ -36,6 +36,8 @@
         <module>embedded-tomcat-demo</module>
         <module>rabbitmq-demo</module>
         <module>mybatis-demo</module>
+        <module>sqlite-demo</module>
+        <module>jwt-demo</module>
     </modules>
     <dependencies>
         <dependency>
