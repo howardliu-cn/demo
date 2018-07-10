@@ -1,0 +1,55 @@
+server:
+  port: 7600
+  tomcat:
+    max-connections: 10000
+    max-threads: 200
+    accept-count: 100
+    min-spare-threads: 25
+    uri-encoding: UTF-8
+
+spring:
+  application:
+    name: ${artifactId}-v1
+  mvc:
+    index.page: status.json
+
+mybatis:
+  configLocation: classpath:mybatis-config.xml
+
+druid.stat.viewer.enabled: false
+
+management:
+  context-path: /admin
+  security.enabled: false
+
+endpoints:
+  shutdown:
+    enabled: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.7.126:8761/eureka/,http://192.168.7.113:8761/eureka/,http://192.168.7.113:8762/eureka/
+    healthcheck:
+      enabled: true
+  instance:
+    preferIpAddress: true
+    statusPageUrlPath: ${management.context-path}/info
+    healthCheckUrlPath: ${management.context-path}/health
+    instanceId: ${spring.application.name}#${spring.cloud.client.ipAddress}:${server.port}
+
+# 设置请求超时时间
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000
+ribbon.ReadTimeout: 120000
+ribbon.ConnectTimeout: 30000
+
+## INFO
+info:
+  app:
+    name: ${project.artifactId}
+    encoding: ${project.build.sourceEncoding}
+    version: ${project.version}
+    java:
+      source: ${java.version}
+      target: ${java.version}
+      vendor: ${java.specification.vendor}

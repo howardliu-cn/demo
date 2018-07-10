@@ -1,0 +1,39 @@
+image: "192.168.4.32/library/maven:3.5.2-jdk-8u152"
+#cache:
+#  paths:
+#    - ".m2_repository"
+variables:
+  DOCKER_DRIVER: "overlay"
+  PROJECT_KEY: "${artifactId}:${version}"
+  PROJECT_NAME: "${artifactId}"
+  PROJECT_VERSION: "${version}"
+  EXCLUSIONS: "**/java/test/**,**/target/**"
+  SOURCE_ENCODING: "UTF-8"
+#  MAVEN_OPTS: "-Dmaven.repo.local=.m2_repository"
+
+stages:
+  - "compile"
+  - "test"
+  - "sonarqube"
+
+compile:
+  stage: "compile"
+  script:
+    - "mvn clean compile -P dev -B"
+
+test:
+  stage: "test"
+  script:
+    - "mvn test -P dev -B"
+  only:
+      - "develop"
+  allow_failure: true
+
+sonarqube_analysis:
+  stage: "sonarqube"
+  script:
+    - "mvn --batch-mode verify sonar:sonar -Dsonar.host.url=$SONAR_URL -Dsonar.issuesReport.html.enable=true -Dsonar.projectKey=$PROJECT_KEY -Dsonar.projectName=$PROJECT_NAME -Dsonar.projectVersion=$PROJECT_VERSION -Dsonar.exclusions=$EXCLUSIONS -Dsonar.sourceEncoding=$SOURCE_ENCODING"
+  only:
+    - sonarqube
+    - master
+  allow_failure: true
