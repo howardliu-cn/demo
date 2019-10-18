@@ -12,7 +12,7 @@
     <artifactId>netty-demo</artifactId>
 
     <properties>
-        <dependency.netty-all.version>4.1.6.Final</dependency.netty-all.version>
+        <dependency.netty-all.version>4.1.42.Final</dependency.netty-all.version>
         <dependency.protobuf-java.version>3.1.0</dependency.protobuf-java.version>
         <dependency.fastjson.version>1.2.22</dependency.fastjson.version>
         <dependency.jboss-marshalling.version>1.4.9.Final</dependency.jboss-marshalling.version>
